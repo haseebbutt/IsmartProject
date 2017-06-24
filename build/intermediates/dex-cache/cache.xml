@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="G:\ismart\ismart\app\libs\volley.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="25.0.2"
+        sha1="d4aaa36e04ee71a83444f8367c97a46fda662d2c">
+        <dex dex="G:\ismart\ismart\app\build\intermediates\pre-dexed\debug\volley_eefadc36306fbe573bae7e4e4b933647120375e4.jar" />
+    </item>
+
+</items>
