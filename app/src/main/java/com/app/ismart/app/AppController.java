@@ -7,12 +7,11 @@ import com.app.ismart.R;
 import com.app.ismart.async.DynamicAsyncTask;
 import com.app.ismart.async.IAsync;
 import com.app.ismart.retrofit.RetrofitClient;
-import com.crashlytics.android.Crashlytics;
+
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
-import io.fabric.sdk.android.Fabric;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
@@ -35,7 +34,7 @@ public class AppController extends Application implements IAsync {
     public void onCreate() {
 
         super.onCreate();
-        Fabric.with(this, new Crashlytics());
+      //  Fabric.with(this, new Crashlytics(), new CrashlyticsNdk());
 
 
         mInstance = this;

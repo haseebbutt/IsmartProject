@@ -3,6 +3,7 @@ package com.app.ismart.realm.interfaces;
 
 import com.app.ismart.realm.tables.TableBackdoorQuantity;
 import com.app.ismart.realm.tables.TableCategory;
+import com.app.ismart.realm.tables.TableCheckedComponents;
 import com.app.ismart.realm.tables.TableComptitorImages;
 import com.app.ismart.realm.tables.TableComptitorProducts;
 import com.app.ismart.realm.tables.TableComptitorQuantity;
@@ -16,6 +17,7 @@ import com.app.ismart.realm.tables.TableShopImages;
 import com.app.ismart.realm.tables.TableShopOptions;
 import com.app.ismart.realm.tables.TableShopStatus;
 import com.app.ismart.realm.tables.TableShops;
+import com.app.ismart.realm.tables.TableVisits;
 import com.app.ismart.realm.tables.TablesQuantity;
 
 import io.realm.Realm;
@@ -28,6 +30,8 @@ import io.realm.RealmResults;
 public interface RealmSpecification extends Specification {
     RealmResults<TableShops> toRealmShopsResults(Realm realm);
     RealmResults<TableShopOptions> toRealmShopOptionResults(Realm realm);
+    RealmResults<TableCheckedComponents> toRealmCheckedComponentsResults(Realm realm);
+    RealmResults<TableVisits> toRealmVisitsResultsDate(Realm realm,int schedid,int complete);
     RealmResults<TableCategory> toRealmCategoruResults(Realm realm);
     RealmResults<TableProducts> toRealmProductResults(Realm realm);
     RealmResults<TableComptitorProducts> toRealmComptitorProductResults(Realm realm);

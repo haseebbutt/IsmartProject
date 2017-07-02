@@ -2,6 +2,9 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <import type="android.view.View"/>
+    </data>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -35,15 +38,24 @@
                 android:textStyle="bold" />
 
         </android.support.v7.widget.LinearLayoutCompat>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rcvoptions"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_weight="9.5"
             android:background="@android:color/white"
             android:divider="@android:color/white"
             android:dividerHeight="1dp"
-            android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
-            android:layout_weight="7.5" />
+            android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft" />
+
+        <Button
+            android:id="@+id/shopcomplete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:background="@drawable/btn"
+            android:text="Shop Completed" />
 
 
     </LinearLayout>

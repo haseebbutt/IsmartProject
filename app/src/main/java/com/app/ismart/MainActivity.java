@@ -51,6 +51,7 @@ import com.app.ismart.dto.ShopImagesDto;
 import com.app.ismart.dto.ShopOptionDto;
 import com.app.ismart.dto.ShopStatusDto;
 import com.app.ismart.dto.UserModel;
+import com.app.ismart.dto.VisitsDto;
 import com.app.ismart.fragments.FragmentPop;
 import com.app.ismart.rcvbase.RecyclerViewUtils;
 import com.app.ismart.realm.RealmController;
@@ -69,7 +70,9 @@ import com.app.ismart.realm.repository.ShopImagesRepository;
 import com.app.ismart.realm.repository.ShopOptionsRepository;
 import com.app.ismart.realm.repository.ShopStatusRepository;
 import com.app.ismart.realm.repository.ShopsRepository;
+import com.app.ismart.realm.repository.VisitsRepository;
 import com.app.ismart.realm.specfication.GetAllData;
+import com.app.ismart.realm.tables.TableVisits;
 import com.app.ismart.rest.APIError;
 import com.app.ismart.rest.IRestResponseListner;
 import com.app.ismart.restmanagers.CommonUploadManger;
@@ -114,8 +117,11 @@ public class MainActivity extends AppCompatActivity
     ComptitorProductRepository comptitorProductRepository;
     ComptitorQuantityRepository comptitorQuantityRepository;
     ComptitorImagesRepository comptitorImagesRepository;
+    VisitsRepository visitsRepository;
     ArrayList<String> dates = new ArrayList<String>();
     ArrayList<String> shopids = new ArrayList<String>();
+    ArrayList<String> resultsnew = new ArrayList<String>();
+    List<VisitsDto> result=new ArrayList<>();
     int quantityUploaded = 0;
     int statusUploaded = 0;
     int feedbackuploaded = 0;
@@ -162,6 +168,9 @@ public class MainActivity extends AppCompatActivity
         comptitorProductRepository = new ComptitorProductRepository(realmController.getRealm());
         comptitorQuantityRepository = new ComptitorQuantityRepository(realmController.getRealm());
         comptitorImagesRepository = new ComptitorImagesRepository(realmController.getRealm());
+        visitsRepository=new VisitsRepository(realmController.getRealm());
+
+
 
         View header = layoutBinding.navView.getHeaderView(0);
         TextView Username = (TextView) header.findViewById(R.id.txtUsername);
@@ -299,8 +308,33 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-//        TextView Username=(TextView)findViewById(R.id.txtUsername);
-//        Username.setText(User.getinstance().getUsername());
+
+        result=visitsRepository.queryforVisits(new GetAllData(),67,1);
+
+        if (result.size() == 0) {
+
+            Toast.makeText(MainActivity.this, "No record", Toast.LENGTH_LONG).show();
+        } else {
+           // Toast.makeText(MainActivity.this, ""+result.size(), Toast.LENGTH_LONG).show();
+            for(int t=0; t<result.size() ; t++) {
+                Toast.makeText(MainActivity.this, "" + result.get(t).getSchedularid(), Toast.LENGTH_LONG).show();
+            }
+
+        }
+
+        //    Realm realm = Realm.getDefaultInstance();
+
+        //   realm.beginTransaction();
+
+
+        // RealmResults<TableVisits> Mindest = realm.where(TableVisits.class);
+      //  int z=0;
+      //  for (final String shopid : shopids) {
+
+         //   z++;
+      //  }
+
+
 
     }
 

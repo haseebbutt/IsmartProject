@@ -36,9 +36,6 @@
             android:hardwareAccelerated="false"
             android:windowSoftInputMode="adjustPan"
             android:theme="@style/AppTheme.FullScreen"></activity>
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="066ec5caf112786f756a50e74820b545e5a67b51" />
     </application>
 
 </manifest>

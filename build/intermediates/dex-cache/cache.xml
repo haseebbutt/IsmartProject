@@ -3,12 +3,12 @@
 
     <item
         is-multidex="false"
-        jar="G:\ismart\ismart\app\libs\volley.jar"
+        jar="C:\Users\user\AppData\AndroidStudioProjects\IsmartProject\app\libs\volley.jar"
         jumboMode="false"
         optimize="true"
         revision="25.0.2"
         sha1="d4aaa36e04ee71a83444f8367c97a46fda662d2c">
-        <dex dex="G:\ismart\ismart\app\build\intermediates\pre-dexed\debug\volley_eefadc36306fbe573bae7e4e4b933647120375e4.jar" />
+        <dex dex="C:\Users\user\AppData\AndroidStudioProjects\IsmartProject\app\build\intermediates\pre-dexed\debug\volley_d5ae6e5c3acd09c3df0a34c45078babe4a454b5e.jar" />
     </item>
 
 </items>

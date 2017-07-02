@@ -6,9 +6,9 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-    <string name="api_url">http://173.212.235.106/api/</string>
+    <string name="api_url">http://173.212.235.106:81/api/</string>
     <!--<string name="api_url">http://192.168.100.3/api/</string>-->
     <string name="permission_read_phone_state_rationale">IMEI required for login</string>
     <string name="permissions_not_granted_read_phone_state">Permission required to get IMEI.</string>
-    <string name="server_url">http://173.212.235.106/</string>
+    <string name="server_url">http://173.212.235.106:81/</string>
 </resources>

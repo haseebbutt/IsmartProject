@@ -4,6 +4,7 @@ package com.app.ismart.realm.specfication;
 import com.app.ismart.realm.interfaces.RealmSpecification;
 import com.app.ismart.realm.tables.TableBackdoorQuantity;
 import com.app.ismart.realm.tables.TableCategory;
+import com.app.ismart.realm.tables.TableCheckedComponents;
 import com.app.ismart.realm.tables.TableComptitorImages;
 import com.app.ismart.realm.tables.TableComptitorProducts;
 import com.app.ismart.realm.tables.TableComptitorQuantity;
@@ -17,6 +18,7 @@ import com.app.ismart.realm.tables.TableShopImages;
 import com.app.ismart.realm.tables.TableShopOptions;
 import com.app.ismart.realm.tables.TableShopStatus;
 import com.app.ismart.realm.tables.TableShops;
+import com.app.ismart.realm.tables.TableVisits;
 import com.app.ismart.realm.tables.TablesQuantity;
 
 import io.realm.Realm;
@@ -43,6 +45,13 @@ public class GetAllData implements RealmSpecification {
                 .findAll();
     }
 
+
+    @Override
+    public RealmResults<TableCheckedComponents> toRealmCheckedComponentsResults(Realm realm) {
+        return realm.where(TableCheckedComponents.class)
+                // .equalTo("userId",userId)
+                .findAll();
+    }
     @Override
     public RealmResults<TableCategory> toRealmCategoruResults(Realm realm) {
         return realm.where(TableCategory.class)
@@ -341,5 +350,14 @@ public class GetAllData implements RealmSpecification {
                 .findAll();
     }
 
+    @Override
+    public RealmResults<TableVisits> toRealmVisitsResultsDate(Realm realm,int sched,int i){
+
+        return realm.where(TableVisits.class)
+                .equalTo("schedularid",sched)
+                .equalTo("completed",i)
+                .findAll();
+
+    }
 
 }
