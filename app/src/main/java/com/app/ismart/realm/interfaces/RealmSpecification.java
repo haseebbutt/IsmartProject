@@ -32,6 +32,7 @@ public interface RealmSpecification extends Specification {
     RealmResults<TableShopOptions> toRealmShopOptionResults(Realm realm);
     RealmResults<TableCheckedComponents> toRealmCheckedComponentsResults(Realm realm);
     RealmResults<TableVisits> toRealmVisitsResultsDate(Realm realm,int schedid,int complete);
+    RealmResults<TableVisits> toRealmVisitsQuery(Realm realm,int sched);
     RealmResults<TableCategory> toRealmCategoruResults(Realm realm);
     RealmResults<TableProducts> toRealmProductResults(Realm realm);
     RealmResults<TableComptitorProducts> toRealmComptitorProductResults(Realm realm);

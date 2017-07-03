@@ -55,6 +55,7 @@ import com.app.ismart.dto.VisitsDto;
 import com.app.ismart.fragments.FragmentPop;
 import com.app.ismart.rcvbase.RecyclerViewUtils;
 import com.app.ismart.realm.RealmController;
+import com.app.ismart.realm.interfaces.Specification;
 import com.app.ismart.realm.repository.BackdoorQuantityRepository;
 import com.app.ismart.realm.repository.ComptitorImagesRepository;
 import com.app.ismart.realm.repository.ComptitorProductRepository;
@@ -93,6 +94,7 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
 import retrofit2.Call;
 
 public class MainActivity extends AppCompatActivity
@@ -118,10 +120,12 @@ public class MainActivity extends AppCompatActivity
     ComptitorQuantityRepository comptitorQuantityRepository;
     ComptitorImagesRepository comptitorImagesRepository;
     VisitsRepository visitsRepository;
+    List<VisitsDto> result;
     ArrayList<String> dates = new ArrayList<String>();
     ArrayList<String> shopids = new ArrayList<String>();
     ArrayList<String> resultsnew = new ArrayList<String>();
-    List<VisitsDto> result=new ArrayList<>();
+    ArrayList<Integer> visitsResults=new ArrayList<Integer>();
+
     int quantityUploaded = 0;
     int statusUploaded = 0;
     int feedbackuploaded = 0;
@@ -135,7 +139,6 @@ public class MainActivity extends AppCompatActivity
     List<ExpiredItemDto> expiredItems;
     List<QuantityDto> stocktake;
     List<CompetitorQuantityDto> competitorQuantityDtoList;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -169,8 +172,6 @@ public class MainActivity extends AppCompatActivity
         comptitorQuantityRepository = new ComptitorQuantityRepository(realmController.getRealm());
         comptitorImagesRepository = new ComptitorImagesRepository(realmController.getRealm());
         visitsRepository=new VisitsRepository(realmController.getRealm());
-
-
 
         View header = layoutBinding.navView.getHeaderView(0);
         TextView Username = (TextView) header.findViewById(R.id.txtUsername);
@@ -308,19 +309,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-
-        result=visitsRepository.queryforVisits(new GetAllData(),67,1);
-
-        if (result.size() == 0) {
-
-            Toast.makeText(MainActivity.this, "No record", Toast.LENGTH_LONG).show();
-        } else {
-           // Toast.makeText(MainActivity.this, ""+result.size(), Toast.LENGTH_LONG).show();
-            for(int t=0; t<result.size() ; t++) {
-                Toast.makeText(MainActivity.this, "" + result.get(t).getSchedularid(), Toast.LENGTH_LONG).show();
-            }
-
-        }
+//Toast.makeText(this,"Result1:"+visitsResults.size(),Toast.LENGTH_LONG).show();
 
         //    Realm realm = Realm.getDefaultInstance();
 
@@ -855,6 +844,27 @@ public class MainActivity extends AppCompatActivity
             }
         }));
         for (final ShopDto shopDto : model) {
+            ////////////////////// Testing Code Visits Table /////////////////
+
+            int datasize=data.size();
+
+                result = visitsRepository.queryforVisits(new GetAllData(), shopDto.getId(), 1);
+
+
+                if (result.size() == 0) {
+
+                //    Toast.makeText(MainActivity.this, "No record", Toast.LENGTH_LONG).show();
+                } else {
+                    // Toast.makeText(MainActivity.this, ""+result.size(), Toast.LENGTH_LONG).show();
+                    for (int t = 0; t < result.size(); t++) {
+
+                        visitsResults.add(result.get(t).getSchedularid());
+                  //      Toast.makeText(MainActivity.this, "" + result.get(t).getSchedularid(), Toast.LENGTH_LONG).show();
+                    }
+
+            }
+            ////////////////// Testing Code Visits Table //////////////////////
+
             if (InternetConnection.checkConnection(MainActivity.this)) {
                 IApiCalls porductapi = RetrofitClient.instance.retrofit.create(IApiCalls.class);
                 Call<List<Products>> porductapiCall = porductapi.getProductsLatest(shopDto.getId() + "");
@@ -890,6 +900,16 @@ public class MainActivity extends AppCompatActivity
             }
 
         }
+
+        for(int i=0 ; i<visitsResults.size() ; i++){
+
+        //    Toast.makeText(this,"Visits Result:"+visitsResults.get(i),Toast.LENGTH_LONG).show();
+
+        }
+
+
+     //   Toast.makeText(this,"Result2:"+visitsResults.size(),Toast.LENGTH_LONG).show();
+
 
         IApiCalls feedbackapi = RetrofitClient.instance.retrofit.create(IApiCalls.class);
         Call<List<FeedBackDto>> feedbackapiCall = feedbackapi.getfeedbcak();
@@ -927,10 +947,16 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public Object IdoInBackGround(Object... params) {
+
+
+
         if (InternetConnection.checkConnection(getBaseContext())) {
             IApiCalls api = RetrofitClient.instance.retrofit.create(IApiCalls.class);
             Call<List<ShopDto>> apiCall = api.getShopsLatest(userModel.useId + "");
             apiCall.enqueue(new ShopsManager(this));
+
+
+
         } else {
             onErrorResponse(null);
 
@@ -952,6 +978,8 @@ public class MainActivity extends AppCompatActivity
         } else {
             layoutBinding.appBar.mainContent.rcvShops.setVisibility(View.GONE);
         }
+
+
     }
 
     public String checklocation() {

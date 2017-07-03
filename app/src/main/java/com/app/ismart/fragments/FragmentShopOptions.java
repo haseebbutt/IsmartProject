@@ -31,6 +31,7 @@ import com.app.ismart.dto.QuantityDto;
 import com.app.ismart.dto.ShopDto;
 import com.app.ismart.dto.ShopOptionDto;
 import com.app.ismart.dto.ShopStatusDto;
+import com.app.ismart.dto.VisitsDto;
 import com.app.ismart.interfaces.IonUpdateMark;
 import com.app.ismart.rcvbase.RecyclerViewUtils;
 import com.app.ismart.realm.RealmController;
@@ -62,6 +63,7 @@ import io.realm.Realm;
 public class FragmentShopOptions extends Fragment implements IonUpdateMark {
     FragmentshopoptionsBinding layoutBinding;
     public ShopDto shopDto;
+    public VisitsDto visitDto;
     String date;
     public String location;
     private RealmController realmController;
@@ -80,6 +82,7 @@ public class FragmentShopOptions extends Fragment implements IonUpdateMark {
     Cursor res2=null;
     public Button completedBtn;
     View view;
+    List<VisitsDto> result;
 
 
     @Nullable
@@ -116,19 +119,24 @@ public class FragmentShopOptions extends Fragment implements IonUpdateMark {
             @Override
             public void onClick(View v) {
 
-                Realm realm = Realm.getDefaultInstance();
-                realm.beginTransaction();
+             //   Realm realm = Realm.getDefaultInstance();
+               // realm.beginTransaction();
 
-                TableVisits visits = realm.createObject(TableVisits.class);
-                visits.setSchedularid(shopDto.getId());
-                visits.setCompleted(1);
 
-               // visitsRepository.add();
-                realm.commitTransaction();
+                result=visitsRepository.queryforVisitsOne(new GetAllData(), shopDto.getId());
 
-                db.removeAll();
+              int a=  result.get(result.size()-1).getVisitid();
+                VisitsDto visitdto=new VisitsDto();
 
-                Toast.makeText(getActivity(), "Data saved !" + res1.getCount(), Toast.LENGTH_LONG).show();
+
+               Toast.makeText(getActivity(), "Visitid:" + a, Toast.LENGTH_LONG).show();
+                visitdto.setSchedularid(shopDto.getId());
+                visitdto.setVisitid(a);
+
+                visitsRepository.update(visitdto);
+
+
+                Toast.makeText(getActivity(), "updated !", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -145,7 +153,7 @@ public class FragmentShopOptions extends Fragment implements IonUpdateMark {
        db = new DatabaseHelper(getActivity().getApplicationContext());
 
        res1=db.getCheckedData(shopDto.getId(),1);
-        Toast.makeText(getActivity(),"shopId:"+shopDto.getId(),Toast.LENGTH_LONG).show();
+    //    Toast.makeText(getActivity(),"shopId:"+shopDto.getId(),Toast.LENGTH_LONG).show();
 
 
         if( res1.getCount() == options.size() ) {

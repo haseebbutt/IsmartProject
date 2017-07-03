@@ -1,26 +1,38 @@
 package com.app.ismart.adopters;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.app.ismart.MainActivity;
 import com.app.ismart.R;
 import com.app.ismart.databinding.ShopItemsBinding;
 import com.app.ismart.dto.ShopDto;
+import com.app.ismart.dto.VisitsDto;
 import com.app.ismart.fragments.FragmentShopClose;
 import com.app.ismart.rcvbase.BaseRecyclerViewAdapter;
 import com.app.ismart.rcvbase.IOnItemClickListner;
+import com.app.ismart.realm.RealmController;
+import com.app.ismart.realm.repository.VisitsRepository;
+import com.app.ismart.realm.specfication.GetAllData;
+import com.app.ismart.realm.tables.TableVisits;
 import com.app.ismart.utils.FragmentUtils;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+
+import io.realm.Realm;
 
 /**
  * Created by HP 2 on 4/22/2017.
@@ -29,6 +41,10 @@ import java.util.List;
 public class ShopsListAdopter extends BaseRecyclerViewAdapter<ShopDto, ShopItemsBinding> implements IOnItemClickListner<ShopDto> {
     public Context context;
     String status = "open";
+    VisitsRepository visitsRepository;
+    List<VisitsDto> result;
+    RealmController realmController;
+    ImageView imageview;
 
     public ShopsListAdopter(List<ShopDto> data, @NotNull Context context) {
         super(data, context);
@@ -37,7 +53,11 @@ public class ShopsListAdopter extends BaseRecyclerViewAdapter<ShopDto, ShopItems
 
     @Override
     protected View onCreateViewHolderDynamic(Context context, LayoutInflater inflater, ViewGroup viewGroup, int viewType) {
+
+        Toast.makeText(context,"Running",Toast.LENGTH_LONG).show();
         return inflater.inflate(R.layout.shop_items, null);
+
+
     }
 
     @Override
@@ -60,6 +80,55 @@ public class ShopsListAdopter extends BaseRecyclerViewAdapter<ShopDto, ShopItems
     @Override
     public void onRecyclerItemClick(ShopDto model, View view, int position) {
         shopStatus(model);
+
+
+        realmController = RealmController.with((Activity) context);
+        visitsRepository=new VisitsRepository(realmController.getRealm());
+        result=visitsRepository.queryforVisitsOne(new GetAllData(), model.getId());
+
+
+            if (result.size()!=0){
+
+               if(result.get(result.size()-1).getCompleted()==1){
+
+
+
+                   VisitsDto visitdto=new VisitsDto();
+
+
+                   int visitupdate=result.get(result.size()-1).getVisitid();
+                   int visitAdd=visitupdate+1;
+
+                   visitdto.setSchedularid(model.getId());
+                   visitdto.setVisitid(visitAdd);
+                   visitdto.setCompleted(0);
+                   visitsRepository.add(visitdto);
+
+
+                   Toast.makeText(context, "Visit: "+visitAdd, Toast.LENGTH_SHORT).show();
+                }else{
+
+                   Toast.makeText(context, "same data", Toast.LENGTH_SHORT).show();
+               }
+
+                Toast.makeText(context, ""+result.get(result.size()-1).getSchedularid(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, ""+result.get(result.size()-1).getVisitid(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, ""+result.get(result.size()-1).getCompleted(), Toast.LENGTH_SHORT).show();
+            }else{
+
+
+
+                VisitsDto visitdto=new VisitsDto();
+                visitdto.setSchedularid(model.getId());
+                visitdto.setVisitid(1);
+                visitdto.setCompleted(0);
+                visitsRepository.add(visitdto);
+
+
+                Toast.makeText(context, "No record found", Toast.LENGTH_SHORT).show();
+            }
+
+
 
     }
 

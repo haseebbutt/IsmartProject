@@ -360,4 +360,13 @@ public class GetAllData implements RealmSpecification {
 
     }
 
+    @Override
+    public RealmResults<TableVisits> toRealmVisitsQuery(Realm realm,int sched){
+
+        return realm.where(TableVisits.class)
+                .equalTo("schedularid",sched)
+                .findAll();
+
+    }
+
 }
