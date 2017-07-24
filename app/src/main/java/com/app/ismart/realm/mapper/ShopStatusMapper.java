@@ -19,6 +19,9 @@ public class ShopStatusMapper implements Mapper<TableShopStatus, ShopStatusDto> 
         shopStatusDto.photo=tableShopStatus.getPhoto();
         shopStatusDto.date=tableShopStatus.getDate();
         shopStatusDto.location=tableShopStatus.getLocation();
+        shopStatusDto.visitId=tableShopStatus.getVisitId();
+        shopStatusDto.startTime=tableShopStatus.getStartTime();
+        shopStatusDto.endTime=tableShopStatus.getEndTime();
         return shopStatusDto;
     }
 }

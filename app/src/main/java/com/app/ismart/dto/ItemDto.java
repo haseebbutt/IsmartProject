@@ -17,9 +17,10 @@ public class ItemDto {
     @SerializedName("category")
     @Expose
     private String category;
-    private String quantity = "0";
+    private String quantity;
     private String display;
     private String shopid;
+    private String displayid;
     private String imageurl;
 
     public String getImageurl() {
@@ -34,8 +35,18 @@ public class ItemDto {
         return shopid;
     }
 
+    public String getDisplayid() {
+        return displayid;
+    }
+
+
     public void setShopid(String shopid) {
         this.shopid = shopid;
+    }
+
+
+    public void setDisplayid(String displayid) {
+        this.displayid = displayid;
     }
 
     public String getDisplay() {

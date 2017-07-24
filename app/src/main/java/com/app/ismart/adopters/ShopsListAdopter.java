@@ -3,6 +3,8 @@ package com.app.ismart.adopters;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.ismart.MainActivity;
@@ -23,14 +26,22 @@ import com.app.ismart.fragments.FragmentShopClose;
 import com.app.ismart.rcvbase.BaseRecyclerViewAdapter;
 import com.app.ismart.rcvbase.IOnItemClickListner;
 import com.app.ismart.realm.RealmController;
+import com.app.ismart.realm.interfaces.Specification;
+import com.app.ismart.realm.repository.ShopsRepository;
 import com.app.ismart.realm.repository.VisitsRepository;
 import com.app.ismart.realm.specfication.GetAllData;
+import com.app.ismart.realm.tables.TableShops;
 import com.app.ismart.realm.tables.TableVisits;
+import com.app.ismart.utils.ArrayList1;
 import com.app.ismart.utils.FragmentUtils;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import io.realm.Realm;
 
@@ -42,26 +53,56 @@ public class ShopsListAdopter extends BaseRecyclerViewAdapter<ShopDto, ShopItems
     public Context context;
     String status = "open";
     VisitsRepository visitsRepository;
+    ShopsRepository shopsRepository;
     List<VisitsDto> result;
+    List<ShopDto> resultShops;
+    List<VisitsDto> high;
     RealmController realmController;
+    Realm realm;
     ImageView imageview;
+    TextView textView;
+    private ArrayList<Integer> visitedIDList = null;
+    View view=null;
 
     public ShopsListAdopter(List<ShopDto> data, @NotNull Context context) {
         super(data, context);
         this.context = context;
+
+
     }
 
     @Override
     protected View onCreateViewHolderDynamic(Context context, LayoutInflater inflater, ViewGroup viewGroup, int viewType) {
 
-        Toast.makeText(context,"Running",Toast.LENGTH_LONG).show();
-        return inflater.inflate(R.layout.shop_items, null);
+
+        view=inflater.inflate(R.layout.shop_items, null);
+       // imageview=(ImageView)view.findViewById(R.id.imageView2);
+    //    textView=(TextView)view.findViewById(R.id.txtShopName);
+
+        return view;
 
 
     }
 
     @Override
     protected void onBindViewHolderDynamic(ShopDto item, ViewHolder viewHolder, int position) {
+
+       realmController = RealmController.with((Activity) context);
+        visitsRepository=new VisitsRepository(realmController.getRealm());
+        result=visitsRepository.queryforVisitsTwo(new GetAllData(), item.getId());
+
+            if(result.size()!=0){
+
+
+                viewHolder.binding.imageView3.setVisibility(View.VISIBLE);
+            //    Toast.makeText(context,"Present;"+result.get(0).getSchedularid(),Toast.LENGTH_LONG).show();
+
+
+          }else{
+                viewHolder.binding.imageView3.setVisibility(View.INVISIBLE);
+
+            }
+
         viewHolder.binding.setShopDto(item);
         setOnItemClickListner(this);
     }
@@ -79,56 +120,25 @@ public class ShopsListAdopter extends BaseRecyclerViewAdapter<ShopDto, ShopItems
 
     @Override
     public void onRecyclerItemClick(ShopDto model, View view, int position) {
-        shopStatus(model);
+
 
 
         realmController = RealmController.with((Activity) context);
         visitsRepository=new VisitsRepository(realmController.getRealm());
-        result=visitsRepository.queryforVisitsOne(new GetAllData(), model.getId());
-
-
-            if (result.size()!=0){
-
-               if(result.get(result.size()-1).getCompleted()==1){
+       shopsRepository=new ShopsRepository(realmController.getRealm());
+        realm = Realm.getDefaultInstance();
 
 
 
-                   VisitsDto visitdto=new VisitsDto();
+         high= visitsRepository.queryforVisitsOne(new GetAllData(),model.getId());
 
 
-                   int visitupdate=result.get(result.size()-1).getVisitid();
-                   int visitAdd=visitupdate+1;
+        int visit=high.get(0).getVisitid();
+        model.setVisitId(visit);
 
-                   visitdto.setSchedularid(model.getId());
-                   visitdto.setVisitid(visitAdd);
-                   visitdto.setCompleted(0);
-                   visitsRepository.add(visitdto);
+        shopStatus(model);
 
-
-                   Toast.makeText(context, "Visit: "+visitAdd, Toast.LENGTH_SHORT).show();
-                }else{
-
-                   Toast.makeText(context, "same data", Toast.LENGTH_SHORT).show();
-               }
-
-                Toast.makeText(context, ""+result.get(result.size()-1).getSchedularid(), Toast.LENGTH_SHORT).show();
-                Toast.makeText(context, ""+result.get(result.size()-1).getVisitid(), Toast.LENGTH_SHORT).show();
-                Toast.makeText(context, ""+result.get(result.size()-1).getCompleted(), Toast.LENGTH_SHORT).show();
-            }else{
-
-
-
-                VisitsDto visitdto=new VisitsDto();
-                visitdto.setSchedularid(model.getId());
-                visitdto.setVisitid(1);
-                visitdto.setCompleted(0);
-                visitsRepository.add(visitdto);
-
-
-                Toast.makeText(context, "No record found", Toast.LENGTH_SHORT).show();
-            }
-
-
+     int Schedularid= model.getId();
 
     }
 
@@ -164,6 +174,7 @@ public class ShopsListAdopter extends BaseRecyclerViewAdapter<ShopDto, ShopItems
             public void onClick(View v) {
 
                 String location = ((MainActivity) context).checklocation();
+
                 if (location != null) {
                     int checkedRadioButtonId = userInput.getCheckedRadioButtonId();
                     if (checkedRadioButtonId == -1) {
@@ -189,6 +200,7 @@ public class ShopsListAdopter extends BaseRecyclerViewAdapter<ShopDto, ShopItems
                     new FragmentUtils((Activity) context, fargment, R.id.fragContainer);
 
                     ((MainActivity) context).enableshoplist(false);
+                    ((MainActivity) context).onResume();
                 }
                 alertDialog.cancel();
 
@@ -203,4 +215,5 @@ public class ShopsListAdopter extends BaseRecyclerViewAdapter<ShopDto, ShopItems
 
 
     }
+
 }

@@ -13,7 +13,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimaryDark"
+            android:background="@color/igrey"
             app:popupTheme="@style/AppTheme.FullScreen.PopupOverlay">
 
 
@@ -34,12 +34,12 @@
             android:id="@+id/btnBefore"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:background="@color/colorPrimaryDark"
-            android:textColor="@android:color/white"
-            android:text="Before Photo" />
+            android:layout_weight="1"
+            android:background="@color/red"
+            android:text="Before Photo"
+            android:textColor="@android:color/white" />
 
         <ImageView
             android:id="@+id/imgAfter"
@@ -52,12 +52,12 @@
             android:id="@+id/btnAfter"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:background="@color/colorPrimaryDark"
-            android:textColor="@android:color/white"
-            android:text="After Photo" />
+            android:layout_weight="1"
+            android:background="@color/red"
+            android:text="After Photo"
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/btnSave"

@@ -77,7 +77,8 @@ public class FragmentExpiredItems extends Fragment implements IOnExpired {
                 expiredItemDto.itemname = itemDto.getTitle();
                 expiredItemDto.shopid = shopDto.getId() + "";
                 expiredItemDto.date = date;
-                List<ExpiredItemDto> exists = expiredItemRepository.queryforitem(new GetAllData(), date, shopDto.getId() + "", itemDto.getId() + "");
+                expiredItemDto.visitid=""+shopDto.getVisitId();
+                List<ExpiredItemDto> exists = expiredItemRepository.queryforitem(new GetAllData(), date, shopDto.getId() + "", itemDto.getId() + "",shopDto.getVisitId()+"");
                 if (exists.size() >= 1) {
                     expiredItemDto.expired = exists.get(0).expired;
                     expiredItemDto.nearexpired = exists.get(0).nearexpired;
@@ -105,7 +106,7 @@ public class FragmentExpiredItems extends Fragment implements IOnExpired {
                 String location = ((MainActivity) getActivity()).checklocation();
                 if (location != null) {
                     for (ExpiredItemDto itemDto : expiredItem) {
-                        List<ExpiredItemDto> exists = expiredItemRepository.queryforitem(new GetAllData(), date, shopDto.getId() + "", itemDto.itemid + "");
+                        List<ExpiredItemDto> exists = expiredItemRepository.queryforitem(new GetAllData(), date, shopDto.getId() + "", itemDto.itemid + "",shopDto.getVisitId()+"");
                         // Toast.makeText(getContext(), ""+itemDto.getTitle()+"\n"+itemDto.getQuantity(), Toast.LENGTH_SHORT).show();
                         itemDto.location = location;
                         itemDto.timestamp = getDateTime();

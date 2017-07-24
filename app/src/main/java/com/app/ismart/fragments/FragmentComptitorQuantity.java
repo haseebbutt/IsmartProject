@@ -83,7 +83,7 @@ public class FragmentComptitorQuantity extends Fragment implements OnEditTextCha
                 String location = ((MainActivity) getActivity()).checklocation();
                 if (location != null) {
                     for (CompetitorProductsDto itemDto : item) {
-                        final List<CompetitorQuantityDto> itemquantity = quantityrepository.queryforitem(new GetAllData(), date, "" + shopDto.getId(), "" + itemDto.getId(),itemDto.getDisplay());
+                        final List<CompetitorQuantityDto> itemquantity = quantityrepository.queryforitem(new GetAllData(), date, "" + shopDto.getId(), "" + itemDto.getId(),itemDto.getDisplay(),shopDto.getVisitId()+"");
                         // Toast.makeText(getContext(), ""+itemDto.getTitle()+"\n"+itemDto.getQuantity(), Toast.LENGTH_SHORT).show();
                         CompetitorQuantityDto dto = new CompetitorQuantityDto();
                         dto.quantities = itemDto.getQuantity();
@@ -94,6 +94,7 @@ public class FragmentComptitorQuantity extends Fragment implements OnEditTextCha
                         dto.displayId = itemDto.getDisplayId() + "";
                         dto.display=itemDto.getDisplay();
                         dto.timestamp = getDateTime();
+                        dto.visitId=shopDto.getVisitId()+"";
                         if (itemquantity.size() >= 1) {
                             dto.id = itemquantity.get(0).id;
                             quantityrepository.update(dto);

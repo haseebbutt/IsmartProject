@@ -42,6 +42,9 @@ public class ShopStatusRepository implements IRepository<ShopStatusDto> {
                 newsRealm.setReason(item.reason);
                 newsRealm.setPhoto(item.photo);
                 newsRealm.setLocation(item.location);
+                newsRealm.setVisitId(item.visitId);
+                newsRealm.setStartTime(item.startTime);
+                newsRealm.setEndTime(item.endTime);
 
             }
         });
@@ -59,7 +62,7 @@ public class ShopStatusRepository implements IRepository<ShopStatusDto> {
     public void update(ShopStatusDto item) {
 
         TableShopStatus toEdit = realm.where(TableShopStatus.class)
-                .equalTo("shopId", item.shopId).equalTo("date",item.date).findFirst();
+                .equalTo("shopId", item.shopId).equalTo("visitId", item.visitId).equalTo("date",item.date).findFirst();
         realm.beginTransaction();
         toEdit.setShopId("" + item.shopId);
         toEdit.setStatus(item.status);
@@ -67,13 +70,16 @@ public class ShopStatusRepository implements IRepository<ShopStatusDto> {
         toEdit.setReason(item.reason);
         toEdit.setPhoto(item.photo);
         toEdit.setLocation(item.location);
+        toEdit.setVisitId(""+item.visitId);
+        toEdit.setStartTime(item.startTime);
+        toEdit.setEndTime(item.endTime);
         realm.commitTransaction();
     }
 
     @Override
     public void remove(ShopStatusDto item) {
         realm.beginTransaction();
-        RealmResults<TableShopStatus> results = realm.where(TableShopStatus.class).equalTo("shopId", item.id).findAll();
+        RealmResults<TableShopStatus> results = realm.where(TableShopStatus.class).equalTo("shopId", item.id).equalTo("visitId", item.visitId).findAll();
         results.clear();
         realm.commitTransaction();
 
@@ -100,10 +106,10 @@ public class ShopStatusRepository implements IRepository<ShopStatusDto> {
 
         realm.commitTransaction();
     }
-    public void removespecfic(Specification specification,String date,String shopid) {
+    public void removespecfic(Specification specification,String date,String shopid,String visitid) {
         realm.beginTransaction();
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TableShopStatus> realmResults = realmSpecification.toRealmShopstatusResults(realm,date,shopid);
+        final RealmResults<TableShopStatus> realmResults = realmSpecification.toRealmShopstatusResults(realm,date,shopid,visitid);
         realmResults.clear();
         realm.commitTransaction();
     }
@@ -123,9 +129,9 @@ public class ShopStatusRepository implements IRepository<ShopStatusDto> {
         return newses;
 
     }
-    public List<ShopStatusDto> queryfordate(Specification specification, String date, String shopid) {
+    public List<ShopStatusDto> queryfordate(Specification specification, String date, String shopid,String visitid) {
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TableShopStatus> realmResults = realmSpecification.toRealmShopstatusResults(realm,date,shopid);
+        final RealmResults<TableShopStatus> realmResults = realmSpecification.toRealmShopstatusResults(realm,date,shopid,visitid);
 
         final List<ShopStatusDto> newses = new ArrayList<>();
         ShopStatusMapper mapper = new ShopStatusMapper();
@@ -138,9 +144,9 @@ public class ShopStatusRepository implements IRepository<ShopStatusDto> {
         return newses;
 
     }
-    public List<ShopStatusDto> queryforitem(Specification specification,String date,String shopid) {
+    public List<ShopStatusDto> queryforitem(Specification specification,String date,String shopid,String visitid) {
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TableShopStatus> realmResults = realmSpecification.toRealmShopstatusResults(realm,date,shopid);
+        final RealmResults<TableShopStatus> realmResults = realmSpecification.toRealmShopstatusResults(realm,date,shopid,visitid);
 
         final List<ShopStatusDto> newses = new ArrayList<>();
         ShopStatusMapper mapper = new ShopStatusMapper();

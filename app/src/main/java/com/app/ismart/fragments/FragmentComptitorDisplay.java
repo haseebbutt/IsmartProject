@@ -17,6 +17,7 @@ import android.widget.ExpandableListView;
 import com.app.ismart.MainActivity;
 import com.app.ismart.R;
 import com.app.ismart.adopters.DisplayAdopter;
+import com.app.ismart.adopters.DisplayAdopterCompetitor;
 import com.app.ismart.databinding.FragmentcomptitordisplayBinding;
 import com.app.ismart.dto.CategoryDto;
 import com.app.ismart.dto.CompetitorProductsDto;
@@ -43,7 +44,7 @@ import java.util.List;
 public class FragmentComptitorDisplay  extends Fragment  {
     public ShopDto shopDto;
     static FragmentcomptitordisplayBinding layoutBinding;
-    private DisplayAdopter expandableListAdapter;
+    private DisplayAdopterCompetitor expandableListAdapter;
     HashMap<String, List<CategoryDto>> expandableListDetail = new HashMap<String, List<CategoryDto>>();
     List<CompetitorProductsDto> expandableListItemsDetail = new ArrayList<>();
     List<DisplayDto> displayList = new ArrayList<>();
@@ -136,7 +137,7 @@ public class FragmentComptitorDisplay  extends Fragment  {
         }
 
         expandableListTitle = new ArrayList<String>(expandableListDetail.keySet());
-        expandableListAdapter = new DisplayAdopter(getContext(), expandableListTitle, expandableListDetail);
+        expandableListAdapter = new DisplayAdopterCompetitor(getContext(), expandableListTitle, expandableListDetail);
         layoutBinding.expandableListView.setAdapter(expandableListAdapter);
     }
 
@@ -145,7 +146,7 @@ public class FragmentComptitorDisplay  extends Fragment  {
         for (CompetitorProductsDto itemDto : list) {
             if (itemDto.getCategory().equalsIgnoreCase(category) && itemDto.getDisplay().equalsIgnoreCase(display)) {
                 items.add(itemDto);
-                final List<CompetitorQuantityDto> itemquantity = quantityrepository.queryforitem(new GetAllData(), date, "" + shopDto.getId(), "" + itemDto.getId(),display);
+                final List<CompetitorQuantityDto> itemquantity = quantityrepository.queryforitem(new GetAllData(), date, "" + shopDto.getId(), "" + itemDto.getId(),display,shopDto.getVisitId()+"");
                 if (itemquantity.size() >= 1) {
                     itemDto.setQuantity(itemquantity.get(0).quantities);
                 }

@@ -12,9 +12,15 @@ public class ShopsMapper implements Mapper<TableShops, ShopDto> {
     @Override
     public ShopDto map(TableShops tableShops) {
         ShopDto shopDto=new ShopDto();
-        shopDto.setAddress(tableShops.getAddress());
-        shopDto.setId(tableShops.getId());
+        int shopid = Integer.parseInt(tableShops.getShopId());
+        shopDto.setId(shopid);
         shopDto.setName(tableShops.getName());
+        shopDto.setAddress(tableShops.getAddress());
+
+        int visitid = Integer.parseInt(tableShops.getVisitId());
+        shopDto.setVisitId(visitid);
+        shopDto.setDay(tableShops.getDay());
+
         return shopDto;
     }
 }

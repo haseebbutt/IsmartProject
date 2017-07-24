@@ -10,4 +10,6 @@ public class ShopImagesDto {
     public String beforeImage;
     public  String afterImage;
     public String date;
+    public String visitid;
+    public String displayName;
 }

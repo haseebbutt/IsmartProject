@@ -103,7 +103,7 @@ public class FragmentComptitorImages extends Fragment implements View.OnClickLis
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 displayid = displayList.get(position).displayid;
-                List<CompetotorImagesDto> shopimages = comptitorImagesRepository.queryForSpecficDate(new GetAllData(), date, "" + shopDto.getId(), displayid);
+                List<CompetotorImagesDto> shopimages = comptitorImagesRepository.queryForSpecficDate(new GetAllData(), date, "" + shopDto.getId(), displayid,""+shopDto.getVisitId());
                 if (shopimages.size() >= 1) {
                     afterImage = shopimages.get(0).afterImage;
 
@@ -217,7 +217,7 @@ public class FragmentComptitorImages extends Fragment implements View.OnClickLis
                             dto.afterImage = afterImage;
                             dto.date = date;
                             dto.displayid = displayid;
-                            List<CompetotorImagesDto> shopimages = comptitorImagesRepository.queryForSpecficDate(new GetAllData(), date, "" + shopDto.getId(), displayid);
+                            List<CompetotorImagesDto> shopimages = comptitorImagesRepository.queryForSpecficDate(new GetAllData(), date, "" + shopDto.getId(), displayid,""+shopDto.getVisitId());
                             if (shopimages.size() >= 1) {
                                 dto.id = shopimages.get(0).id;
                                 comptitorImagesRepository.update(dto);

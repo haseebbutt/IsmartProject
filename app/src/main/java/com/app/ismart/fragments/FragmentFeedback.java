@@ -1,5 +1,6 @@
 package com.app.ismart.fragments;
 
+import android.app.Activity;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -19,12 +20,14 @@ import com.app.ismart.MainActivity;
 import com.app.ismart.R;
 import com.app.ismart.adopters.FeedbackAdopter;
 import com.app.ismart.databinding.FragmentFeedbackBinding;
+import com.app.ismart.dto.FeedBackAnswersDto;
 import com.app.ismart.dto.FeedBackDto;
 import com.app.ismart.dto.FeedbackSubmitDto;
 import com.app.ismart.dto.ShopDto;
 import com.app.ismart.interfaces.OnEditTextChanged;
 import com.app.ismart.rcvbase.RecyclerViewUtils;
 import com.app.ismart.realm.RealmController;
+import com.app.ismart.realm.repository.FeedbackAnswersRepository;
 import com.app.ismart.realm.repository.FeedbackRepository;
 import com.app.ismart.realm.repository.FeedbackSubmitRepository;
 import com.app.ismart.realm.specfication.GetAllData;
@@ -46,6 +49,8 @@ public class FragmentFeedback extends Fragment implements OnEditTextChanged {
     FeedbackRepository repositoryFeedback;
     FeedbackSubmitRepository repositoryFeedbackSubmit;
     public List<FeedBackDto> data = new ArrayList<>();
+    List<FeedBackAnswersDto> answersList;
+    FeedbackAnswersRepository repositoryFeedbackAnswers;
     public ShopDto shopDto;
 String date;
     @Nullable
@@ -61,9 +66,12 @@ String date;
         repositoryFeedback = new FeedbackRepository(realmController.getRealm());
         repositoryFeedbackSubmit = new FeedbackSubmitRepository(realmController.getRealm());
 
+
         if (data.size() >= 1) {
 
             setdataAdopter();
+
+
         }
 
         layoutBinding.btnSave.setOnClickListener(new View.OnClickListener() {
@@ -78,7 +86,8 @@ String date;
                         dto.feedbackId = itemDto.getFeedbackid();
                         dto.response = itemDto.getAnswers();
                         dto.date=date;
-                        List<FeedbackSubmitDto> exists = repositoryFeedbackSubmit.queryforfeedback(new GetAllData(), shopDto.getId() + "", itemDto.getFeedbackid());
+                        dto.visitId=""+shopDto.getVisitId();
+                        List<FeedbackSubmitDto> exists = repositoryFeedbackSubmit.queryforfeedback(new GetAllData(), shopDto.getId() + "", itemDto.getFeedbackid(),""+shopDto.getVisitId());
                         if (exists.size() >= 1) {
                             repositoryFeedbackSubmit.update(dto);
                         } else {
@@ -98,7 +107,7 @@ String date;
     private void setdataAdopter() {
         for (int i = 0; i < data.size(); i++) {
 
-            List<FeedbackSubmitDto> exists = repositoryFeedbackSubmit.queryforfeedback(new GetAllData(), shopDto.getId() + "", data.get(i).getId() + "");
+            List<FeedbackSubmitDto> exists = repositoryFeedbackSubmit.queryforfeedback(new GetAllData(), shopDto.getId() + "", data.get(i).getId() + "",shopDto.getVisitId()+"");
             if (exists.size() >= 1) {
                 data.get(i).setAnswers(exists.get(0).response);
             }

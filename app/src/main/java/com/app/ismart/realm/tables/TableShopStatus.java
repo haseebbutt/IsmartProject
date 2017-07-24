@@ -17,6 +17,9 @@ public class TableShopStatus extends RealmObject {
     private String status;
     private String reason;
     private String photo;
+    private String visitId;
+    private String startTime;
+    private String endTime;
 
     public String getLocation() {
         return location;
@@ -37,6 +40,24 @@ public class TableShopStatus extends RealmObject {
         return date;
     }
 
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getStartTime() {
+
+        return startTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getEndTime() {
+
+        return endTime;
+    }
+
 
     public void setStatus(String status) {
         this.status = status;
@@ -50,6 +71,10 @@ public class TableShopStatus extends RealmObject {
 
     public void setShopId(String shopId) {
         this.shopId = shopId;
+    }
+
+    public void setVisitId(String visitId) {
+        this.visitId = visitId;
     }
 
     public void setReason(String reason) {
@@ -72,6 +97,10 @@ public class TableShopStatus extends RealmObject {
 
     public String getShopId() {
         return shopId;
+    }
+
+    public String getVisitId() {
+        return visitId;
     }
 
     public String getReason() {

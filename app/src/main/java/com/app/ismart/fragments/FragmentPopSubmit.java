@@ -139,7 +139,8 @@ public class FragmentPopSubmit extends Fragment implements IRestResponseListner<
                             dto.quantity = pop.getQuantity();
                             dto.photo = pop.getImage();
                             dto.location=location;
-                            List<PopSubmitDto> exists = popSubmitRepository.query(new GetAllData(), dto.popid, dto.shopid);
+                            dto.visitid = shopDto.getVisitId() + "";
+                            List<PopSubmitDto> exists = popSubmitRepository.query(new GetAllData(), dto.popid, dto.shopid,dto.visitid);
                             if (exists.size() >= 1) {
                                 popSubmitRepository.update(dto);
                             } else {
@@ -158,7 +159,7 @@ public class FragmentPopSubmit extends Fragment implements IRestResponseListner<
 
     private void setDataAdopter(List<Pop> data) {
         for (int i = 0; i < pops.size(); i++) {
-            List<PopSubmitDto> exists = popSubmitRepository.query(new GetAllData(), pops.get(i).getId() + "", shopDto.getId() + "");
+            List<PopSubmitDto> exists = popSubmitRepository.query(new GetAllData(), pops.get(i).getId() + "", shopDto.getId() + "",shopDto.getVisitId()+"");
             if (exists.size() >= 1) {
                 pops.get(i).setQuantity(exists.get(0).quantity);
                 pops.get(i).setImage(exists.get(0).photo);

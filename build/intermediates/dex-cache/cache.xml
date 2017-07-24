@@ -6,7 +6,7 @@
         jar="C:\Users\user\AppData\AndroidStudioProjects\IsmartProject\app\libs\volley.jar"
         jumboMode="false"
         optimize="true"
-        revision="25.0.2"
+        revision="25.0.3"
         sha1="d4aaa36e04ee71a83444f8367c97a46fda662d2c">
         <dex dex="C:\Users\user\AppData\AndroidStudioProjects\IsmartProject\app\build\intermediates\pre-dexed\debug\volley_d5ae6e5c3acd09c3df0a34c45078babe4a454b5e.jar" />
     </item>

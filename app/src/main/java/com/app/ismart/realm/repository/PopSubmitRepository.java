@@ -42,6 +42,7 @@ public class PopSubmitRepository implements IRepository<PopSubmitDto> {
                 newsRealm.setPhoto(item.photo);
                 newsRealm.setTimestamp(item.timestamp);
                 newsRealm.setShopid(item.shopid);
+                newsRealm.setVisitid(item.visitid);
                 newsRealm.setLocation(item.location);
 
 
@@ -62,7 +63,7 @@ public class PopSubmitRepository implements IRepository<PopSubmitDto> {
     public void update(PopSubmitDto item) {
 
         TablePopSubmit toEdit = realm.where(TablePopSubmit.class)
-                .equalTo("popid", item.popid) .equalTo("shopid", item.shopid).findFirst();
+                .equalTo("popid", item.popid) .equalTo("shopid", item.shopid).equalTo("visitid", item.visitid).findFirst();
         realm.beginTransaction();
         toEdit.setId(nextID);
         toEdit.setPopid(item.popid);
@@ -72,13 +73,14 @@ public class PopSubmitRepository implements IRepository<PopSubmitDto> {
         toEdit.setTimestamp(item.timestamp);
         toEdit.setShopid(item.shopid);
         toEdit.setLocation(item.location);
+        toEdit.setVisitid(item.visitid);
         realm.commitTransaction();
     }
 
     @Override
     public void remove(PopSubmitDto item) {
         realm.beginTransaction();
-        RealmResults<TablePopSubmit> results = realm.where(TablePopSubmit.class).equalTo("popid", item.popid) .equalTo("shopid", item.shopid).findAll();
+        RealmResults<TablePopSubmit> results = realm.where(TablePopSubmit.class).equalTo("popid", item.popid) .equalTo("shopid", item.shopid).equalTo("visitid", item.visitid).findAll();
         results.clear();
         realm.commitTransaction();
 
@@ -107,9 +109,9 @@ public class PopSubmitRepository implements IRepository<PopSubmitDto> {
     }
 
 
-    public List<PopSubmitDto> query(Specification specification,String popid,String shopid) {
+    public List<PopSubmitDto> query(Specification specification,String popid,String shopid,String visitid) {
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TablePopSubmit> realmResults = realmSpecification.toRealmPopSubmitResults(realm,popid,shopid);
+        final RealmResults<TablePopSubmit> realmResults = realmSpecification.toRealmPopSubmitResults(realm,popid,shopid,visitid);
 
         final List<PopSubmitDto> newses = new ArrayList<>();
         PopSubmitMapper mapper = new PopSubmitMapper();
@@ -122,9 +124,9 @@ public class PopSubmitRepository implements IRepository<PopSubmitDto> {
         return newses;
 
     }
-    public List<PopSubmitDto> queryfordate(Specification specification,String date,String shopid) {
+    public List<PopSubmitDto> queryfordate(Specification specification,String date,String shopid,String visitid) {
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TablePopSubmit> realmResults = realmSpecification.toRealmPopSubmitbydateResults(realm,date,shopid);
+        final RealmResults<TablePopSubmit> realmResults = realmSpecification.toRealmPopSubmitbydateResults(realm,date,shopid,visitid);
 
         final List<PopSubmitDto> newses = new ArrayList<>();
         PopSubmitMapper mapper = new PopSubmitMapper();

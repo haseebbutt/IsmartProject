@@ -17,6 +17,7 @@ public class TablePopSubmit extends RealmObject {
     private String date;
     private String timestamp;
     private String location;
+    private String visitid;
 
     public String getLocation() {
         return location;
@@ -36,6 +37,10 @@ public class TablePopSubmit extends RealmObject {
 
     public void setShopid(String shopid) {
         this.shopid = shopid;
+    }
+
+    public void setVisitid(String visitid) {
+        this.visitid = visitid;
     }
 
     public void setQuantity(String quantity) {
@@ -64,6 +69,10 @@ public class TablePopSubmit extends RealmObject {
 
     public String getShopid() {
         return shopid;
+    }
+
+    public String getVisitid() {
+        return visitid;
     }
 
     public String getQuantity() {

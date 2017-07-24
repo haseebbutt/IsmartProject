@@ -43,6 +43,7 @@ public class ComptitorQuantityRepository implements IRepository<CompetitorQuanti
                 newsRealm.setTimestamp(item.timestamp);
                 newsRealm.setLocation(item.location);
                 newsRealm.setDisplay(item.display);
+                newsRealm.setVisitId(item.visitId);
             }
         });
 
@@ -66,6 +67,7 @@ public class ComptitorQuantityRepository implements IRepository<CompetitorQuanti
                     newsRealm.setTimestamp(item.timestamp);
                     newsRealm.setLocation(item.location);
                     newsRealm.setDisplay(item.display);
+                    newsRealm.setVisitId(item.visitId);
 
                 }
             });
@@ -76,7 +78,7 @@ public class ComptitorQuantityRepository implements IRepository<CompetitorQuanti
     public void update(CompetitorQuantityDto item) {
 
         TableComptitorQuantity toEdit = realm.where(TableComptitorQuantity.class)
-                .equalTo("products", item.products).equalTo("date", item.date).equalTo("shopId", item.shopId).equalTo("display", item.display).findFirst();
+                .equalTo("products", item.products).equalTo("date", item.date).equalTo("shopId", item.shopId).equalTo("visitId", item.visitId).equalTo("display", item.display).findFirst();
         realm.beginTransaction();
         toEdit.setProducts(item.products);
         toEdit.setQuantities(item.quantities);
@@ -86,6 +88,7 @@ public class ComptitorQuantityRepository implements IRepository<CompetitorQuanti
         toEdit.setTimestamp(item.timestamp);
         toEdit.setLocation(item.location);
         toEdit.setDisplay(item.display);
+        toEdit.setVisitId(item.visitId);
         realm.commitTransaction();
     }
 
@@ -107,10 +110,10 @@ public class ComptitorQuantityRepository implements IRepository<CompetitorQuanti
         realm.commitTransaction();
     }
 
-    public void removespecfic(Specification specification, String date, String displayid,String shopid) {
+    public void removespecfic(Specification specification, String date, String displayid,String shopid,String visitid) {
         realm.beginTransaction();
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TableComptitorQuantity> realmResults = realmSpecification.toRealmComptitorQuantitydisplaymResults(realm, date, shopid,displayid);
+        final RealmResults<TableComptitorQuantity> realmResults = realmSpecification.toRealmComptitorQuantitydisplaymResults(realm, date, shopid,displayid,visitid);
         realmResults.clear();
         realm.commitTransaction();
     }
@@ -145,9 +148,9 @@ public class ComptitorQuantityRepository implements IRepository<CompetitorQuanti
 
     }
 
-    public List<CompetitorQuantityDto> queryfordate(Specification specification, String date, String shopid,String display) {
+    public List<CompetitorQuantityDto> queryfordate(Specification specification, String date, String shopid,String display,String visitid) {
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TableComptitorQuantity> realmResults = realmSpecification.toRealmComptitorQuantitydisplaymResults(realm, date, shopid,display);
+        final RealmResults<TableComptitorQuantity> realmResults = realmSpecification.toRealmComptitorQuantitydisplaymResults(realm, date, shopid,display,visitid);
 
         final List<CompetitorQuantityDto> newses = new ArrayList<>();
         ComptitorQuantityMapper mapper = new ComptitorQuantityMapper();
@@ -161,9 +164,9 @@ public class ComptitorQuantityRepository implements IRepository<CompetitorQuanti
         return newses;
 
     }
-    public List<CompetitorQuantityDto> queryfordate(Specification specification, String date, String shopid) {
+    public List<CompetitorQuantityDto> queryfordate1(Specification specification, String date, String shopid,String visitid) {
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TableComptitorQuantity> realmResults = realmSpecification.toRealmComptitorQuantitydisplaymResults(realm, date, shopid);
+        final RealmResults<TableComptitorQuantity> realmResults = realmSpecification.toRealmComptitorQuantitydisplaymResults1(realm, date, shopid,visitid);
 
         final List<CompetitorQuantityDto> newses = new ArrayList<>();
         ComptitorQuantityMapper mapper = new ComptitorQuantityMapper();
@@ -193,9 +196,9 @@ public class ComptitorQuantityRepository implements IRepository<CompetitorQuanti
         return newses;
 
     }
-    public List<CompetitorQuantityDto> queryforitem(Specification specification, String date, String shopid, String itemid,String display) {
+    public List<CompetitorQuantityDto> queryforitem(Specification specification, String date, String shopid, String itemid,String display,String visitid) {
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TableComptitorQuantity> realmResults = realmSpecification.toRealmComptitorQuantitymResults(realm, date, shopid, itemid,display);
+        final RealmResults<TableComptitorQuantity> realmResults = realmSpecification.toRealmComptitorQuantitymResults(realm, date, shopid, itemid,display,visitid);
 
         final List<CompetitorQuantityDto> newses = new ArrayList<>();
         ComptitorQuantityMapper mapper = new ComptitorQuantityMapper();

@@ -1,6 +1,7 @@
 package com.app.ismart.api;
 
 import com.app.ismart.dto.CompetitorProductsDto;
+import com.app.ismart.dto.FeedBackAnswersDto;
 import com.app.ismart.dto.FeedBackDto;
 import com.app.ismart.dto.ImeiDto;
 import com.app.ismart.dto.ItemDto;
@@ -56,7 +57,9 @@ public interface IApiCalls {
                                     @Field("products") String products,
                                     @Field("quantities") String quantities,
                                     @Field("beforePhoto") String beforePhoto,
-                                    @Field("afterPhoto") String afterPhoto);
+                                    @Field("afterPhoto") String afterPhoto,
+                                    @Field("display_name") String display_name,
+                                    @Field("visitid") String visitid);
 
     @GET("pop/client")
     Call<List<Pop>> getpops();
@@ -74,10 +77,14 @@ public interface IApiCalls {
             @Field("shopId") String shopId,
             @Field("status") String status,
             @Field("faciaPhoto") String faciaPhoto,
-            @Field("reason") String reason);
+            @Field("reason") String reason,
+            @Field("visitId") String visitId);
 
     @GET("feedback")
     Call<List<FeedBackDto>> getfeedbcak();
+
+    @GET("feedback/answer")
+    Call<List<FeedBackAnswersDto>> getfeedbcakAnswer();
 
     @POST("feedback/response")
     @FormUrlEncoded
@@ -85,7 +92,8 @@ public interface IApiCalls {
             @Field("feedbackId") String feedbackId,
             @Field("shopId") String shopId,
             @Field("response") String response,
-            @Field("location") String location);
+            @Field("location") String location,
+            @Field("visitId") String visitId);
 
     @GET("logout")
     Call<Response> logout();
@@ -98,7 +106,8 @@ public interface IApiCalls {
             @Field("quantity") String quantity,
             @Field("photo") String photo,
             @Field("location") String location,
-            @Field("time") String time);
+            @Field("time") String time,
+            @Field("visitId") String visitId);
 
     @POST("expiry/response")
     @FormUrlEncoded
@@ -108,7 +117,8 @@ public interface IApiCalls {
             @Field("expiredQuantity") String expiredQuantity,
             @Field("nearExpiredQuantity") String nearExpiredQuantity,
             @Field("itemId") String itemId,
-            @Field("shopId") String shopId);
+            @Field("shopId") String shopId,
+            @Field("visitId") String visitId);
 
     @POST("stocktake/response")
     @FormUrlEncoded
@@ -116,10 +126,11 @@ public interface IApiCalls {
                                    @Field("products") String products,
                                    @Field("shopId") String shopId,
                                    @Field("location") String location,
-                                   @Field("time") String timestamp);
+                                   @Field("time") String timestamp,
+                                   @Field("visitId") String visitId);
 
-    @GET("drive")
-    Call<List<ShopOptionDto>> getcomponent();
+    @GET("drive/{driveId}")
+    Call<List<ShopOptionDto>> getcomponent(@Path("driveId") String driveId);
 
     @GET("competitor/products")
     Call<List<CompetitorProductsDto>> getcomptitorproducts();
@@ -130,7 +141,8 @@ public interface IApiCalls {
                                              @Field("products") String products,
                                              @Field("quantities") String quantities,
                                              @Field("displayId") String displayId,
-                                             @Field("photo") String photo);
+                                             @Field("photo") String photo,
+                                             @Field("visitId") String visitId);
 
     @GET("imei/{param}")
     Call<Response> getImei(@Path("param") String imei);

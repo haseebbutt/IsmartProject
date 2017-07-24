@@ -1,6 +1,7 @@
 package com.app.ismart.fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -33,6 +34,7 @@ import com.app.ismart.R;
 import com.app.ismart.async.AsyncDispatcher;
 import com.app.ismart.async.IAsync;
 import com.app.ismart.databinding.FragmentcheckingBinding;
+import com.app.ismart.dto.DisplayDto;
 import com.app.ismart.dto.ShopDto;
 import com.app.ismart.dto.ShopImagesDto;
 import com.app.ismart.realm.RealmController;
@@ -46,6 +48,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -69,6 +72,10 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
     private RealmController realmController;
     String date;
     String afterImage, beforeImage;
+    public ArrayList<DisplayDto> display;
+    public String pos;
+    public int i;
+    public String a;
 
     @Nullable
     @Override
@@ -85,7 +92,10 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
         realmController = RealmController.with(this);
         shopImagesRepository = new ShopImagesRepository(realmController.getRealm());
         date = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
-        List<ShopImagesDto> shopimages = shopImagesRepository.queryForSpecficDate(new GetAllData(), date, "" + shopDto.getId());
+        i= Integer.parseInt(pos);
+        a =display.get(i).display;
+
+        List<ShopImagesDto> shopimages = shopImagesRepository.queryForSpecficDate(new GetAllData(), date, "" + shopDto.getId(),""+shopDto.getVisitId(),a);
         if (shopimages.size() >= 1) {
             afterImage = shopimages.get(0).afterImage;
             beforeImage = shopimages.get(0).beforeImage;
@@ -119,6 +129,8 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
                 }
             }
         });
+
+
         return layoutBinding.getRoot();
     }
 
@@ -193,12 +205,17 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
                         @Override
                         public void IOnPostExecute(Object result) {
 
+
+
                             ShopImagesDto dto = new ShopImagesDto();
                             dto.shopid = "" + shopDto.getId();
                             dto.beforeImage = beforeImage;
                             dto.afterImage = afterImage;
                             dto.date = date;
-                            List<ShopImagesDto> shopimages = shopImagesRepository.queryForSpecficDate(new GetAllData(), date, "" + shopDto.getId());
+                            dto.displayName=a;
+                            dto.visitid=""+shopDto.getVisitId();
+
+                            List<ShopImagesDto> shopimages = shopImagesRepository.queryForSpecficDate(new GetAllData(), date, "" + shopDto.getId(),""+shopDto.getVisitId(),a);
                             if (shopimages.size() >= 1) {
                                 dto.id = shopimages.get(0).id;
                                 shopImagesRepository.update(dto);

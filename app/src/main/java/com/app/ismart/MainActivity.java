@@ -1,6 +1,7 @@
 package com.app.ismart;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -18,6 +19,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -38,6 +40,7 @@ import com.app.ismart.dto.CompetitorProductsDto;
 import com.app.ismart.dto.CompetitorQuantityDto;
 import com.app.ismart.dto.CompetotorImagesDto;
 import com.app.ismart.dto.ExpiredItemDto;
+import com.app.ismart.dto.FeedBackAnswersDto;
 import com.app.ismart.dto.FeedBackDto;
 import com.app.ismart.dto.FeedbackSubmitDto;
 import com.app.ismart.dto.ItemDto;
@@ -61,6 +64,7 @@ import com.app.ismart.realm.repository.ComptitorImagesRepository;
 import com.app.ismart.realm.repository.ComptitorProductRepository;
 import com.app.ismart.realm.repository.ComptitorQuantityRepository;
 import com.app.ismart.realm.repository.ExpiredItemRepository;
+import com.app.ismart.realm.repository.FeedbackAnswersRepository;
 import com.app.ismart.realm.repository.FeedbackRepository;
 import com.app.ismart.realm.repository.FeedbackSubmitRepository;
 import com.app.ismart.realm.repository.PopRepository;
@@ -73,11 +77,13 @@ import com.app.ismart.realm.repository.ShopStatusRepository;
 import com.app.ismart.realm.repository.ShopsRepository;
 import com.app.ismart.realm.repository.VisitsRepository;
 import com.app.ismart.realm.specfication.GetAllData;
+import com.app.ismart.realm.tables.TableShops;
 import com.app.ismart.realm.tables.TableVisits;
 import com.app.ismart.rest.APIError;
 import com.app.ismart.rest.IRestResponseListner;
 import com.app.ismart.restmanagers.CommonUploadManger;
 import com.app.ismart.restmanagers.ComptitorProductsManager;
+import com.app.ismart.restmanagers.FeedbackAnswerManager;
 import com.app.ismart.restmanagers.FeedbackManager;
 import com.app.ismart.restmanagers.LatestProductManager;
 import com.app.ismart.restmanagers.PopManger;
@@ -85,6 +91,7 @@ import com.app.ismart.restmanagers.ShopOptionRestManager;
 import com.app.ismart.restmanagers.ShopsManager;
 import com.app.ismart.restmanagers.UploadQuantityManager;
 import com.app.ismart.retrofit.RetrofitClient;
+import com.app.ismart.utils.ArrayList1;
 import com.app.ismart.utils.FragmentUtils;
 import com.app.ismart.utils.GPSTracker;
 import com.app.ismart.utils.InternetConnection;
@@ -95,6 +102,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 import retrofit2.Call;
 
 public class MainActivity extends AppCompatActivity
@@ -111,6 +119,7 @@ public class MainActivity extends AppCompatActivity
     ShopStatusRepository shopStatusRepository;
     FeedbackSubmitRepository feedbackSubmitRepository;
     FeedbackRepository repositoryFeedback;
+    FeedbackAnswersRepository repositoryFeedbackAnswers;
     PopSubmitRepository popSubmitRepository;
     PopRepository popRepository;
     ShopOptionsRepository shopOptionsRepository;
@@ -123,8 +132,11 @@ public class MainActivity extends AppCompatActivity
     List<VisitsDto> result;
     ArrayList<String> dates = new ArrayList<String>();
     ArrayList<String> shopids = new ArrayList<String>();
+    ArrayList<String> visitids = new ArrayList<String>();
+    ArrayList<String> dispNames = new ArrayList<String>();
     ArrayList<String> resultsnew = new ArrayList<String>();
     ArrayList<Integer> visitsResults=new ArrayList<Integer>();
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     int quantityUploaded = 0;
     int statusUploaded = 0;
@@ -133,12 +145,20 @@ public class MainActivity extends AppCompatActivity
     int expireduploaded = 0;
     int stockuploaded = 0;
     int comptitorquantityuploaded = 0;
+    int driveid;
     List<ShopStatusDto> shopStatuses;
     List<FeedbackSubmitDto> feedbacks;
     List<PopSubmitDto> pops;
     List<ExpiredItemDto> expiredItems;
     List<QuantityDto> stocktake;
     List<CompetitorQuantityDto> competitorQuantityDtoList;
+    List<QuantityDto> localStored;
+    ShopsListAdopter  adapter;
+
+
+    List<ShopDto> day1;
+    String databseDate;
+    String latestDate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -165,6 +185,7 @@ public class MainActivity extends AppCompatActivity
         productRepository = new ProductRepository(realmController.getRealm());
         popRepository = new PopRepository(realmController.getRealm());
         repositoryFeedback = new FeedbackRepository(realmController.getRealm());
+        repositoryFeedbackAnswers=new FeedbackAnswersRepository(realmController.getRealm());
         expiredItemRepository = new ExpiredItemRepository(realmController.getRealm());
         backdoorQuantityRepository = new BackdoorQuantityRepository(realmController.getRealm());
         shopOptionsRepository = new ShopOptionsRepository(realmController.getRealm());
@@ -172,6 +193,7 @@ public class MainActivity extends AppCompatActivity
         comptitorQuantityRepository = new ComptitorQuantityRepository(realmController.getRealm());
         comptitorImagesRepository = new ComptitorImagesRepository(realmController.getRealm());
         visitsRepository=new VisitsRepository(realmController.getRealm());
+     //   mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
 
         View header = layoutBinding.navView.getHeaderView(0);
         TextView Username = (TextView) header.findViewById(R.id.txtUsername);
@@ -191,7 +213,7 @@ public class MainActivity extends AppCompatActivity
         layoutBinding.appBar.btnSync.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<QuantityDto> localStored = quanityRepository.query(new GetAllData());
+                localStored = quanityRepository.query(new GetAllData());
                 shopStatuses = shopStatusRepository.query(new GetAllData());
                 feedbacks = feedbackSubmitRepository.query(new GetAllData());
                 pops = popSubmitRepository.query(new GetAllData());
@@ -199,144 +221,209 @@ public class MainActivity extends AppCompatActivity
                 stocktake = backdoorQuantityRepository.query(new GetAllData());
                 competitorQuantityDtoList = comptitorQuantityRepository.query(new GetAllData());
                 quantityUploaded = 0;
-                final int size = localStored.size();
-                if (size <= 0 && shopStatuses.size() <= 0 && feedbacks.size() <= 0 && pops.size() <= 0 && expiredItems.size() <= 0 && stocktake.size() <= 0 && competitorQuantityDtoList.size() <= 0) {
+                final int size = shopStatuses.size();
+                if (size <= 0 && localStored.size() <= 0 && feedbacks.size() <= 0 && pops.size() <= 0 && expiredItems.size() <= 0 && stocktake.size() <= 0 && competitorQuantityDtoList.size() <= 0) {
                     Toast.makeText(MainActivity.this, "No data to upload", Toast.LENGTH_SHORT).show();
-                } else if (size <= 0 && shopStatuses.size() > 0) {
-                    dialog.setMessage("Uploading please wait....");
+                } else if (size <= 0 && localStored.size() > 0) {
+                    dialog.setMessage("Uploading please wait....1");
                     dialog.show();
-                    uploadStatus();
-                } else if (size <= 0 && shopStatuses.size() <= 0 && feedbacks.size() > 0) {
-                    dialog.setMessage("Uploading please wait....");
+                    uploadMerchandising();
+                   // uploadStatus();
+                } else if (size <= 0 && localStored.size() <= 0 && feedbacks.size() > 0) {
+                    dialog.setMessage("Uploading please wait....2");
                     dialog.show();
                     uploadfeedbacks();
-                } else if (size <= 0 && shopStatuses.size() <= 0 && feedbacks.size() <= 0 && expiredItems.size() >= 1) {
-                    dialog.setMessage("Uploading please wait....");
+                } else if (size <= 0 && localStored.size() <= 0 && feedbacks.size() <= 0 && expiredItems.size() >= 1) {
+                    dialog.setMessage("Uploading please wait....3");
                     dialog.show();
                     uploadExpiredItems();
-                } else if (size <= 0 && shopStatuses.size() <= 0 && feedbacks.size() <= 0 && expiredItems.size() <= 0 && stocktake.size() >= 1) {
-                    dialog.setMessage("Uploading please wait....");
+                } else if (size <= 0 && localStored.size() <= 0 && feedbacks.size() <= 0 && expiredItems.size() <= 0 && stocktake.size() >= 1) {
+                    dialog.setMessage("Uploading please wait....4");
                     dialog.show();
                     uploadstocktake();
-                } else if (size <= 0 && shopStatuses.size() <= 0 && feedbacks.size() <= 0 && expiredItems.size() <= 0 && stocktake.size() <= 0 && competitorQuantityDtoList.size() >= 1) {
-                    dialog.setMessage("Uploading please wait....");
+                } else if (size <= 0 && localStored.size() <= 0 && feedbacks.size() <= 0 && expiredItems.size() <= 0 && stocktake.size() <= 0 && competitorQuantityDtoList.size() >= 1) {
+                    dialog.setMessage("Uploading please wait....5");
                     dialog.show();
                     uploadcomptitor();
-                } else if (size <= 0 && shopStatuses.size() <= 0 && feedbacks.size() <= 0 && expiredItems.size() <= 0 && stocktake.size() <= 0 && competitorQuantityDtoList.size() <= 0 && pops.size() >= 1) {
-                    dialog.setMessage("Uploading please wait....");
+                } else if (size <= 0 && localStored.size() <= 0 && feedbacks.size() <= 0 && expiredItems.size() <= 0 && stocktake.size() <= 0 && competitorQuantityDtoList.size() <= 0 && pops.size() >= 1) {
+                    dialog.setMessage("Uploading please wait....6");
                     dialog.show();
                     uploadpops();
                 } else {
-                    dialog.setMessage("Uploading please wait....");
+                    dialog.setMessage("Uploading please wait....7");
                     dialog.show();
 
-                    for (QuantityDto quantityDto : localStored) {
-                        if (!dates.contains(quantityDto.date)) {
-                            dates.add(quantityDto.date);
 
-                        }
-                        if (!shopids.contains(quantityDto.shopid)) {
-
-                            shopids.add(quantityDto.shopid);
-                        }
-                    }
-                    for (final String date : dates) {
-                        final int totalsize = shopids.size();
-                        for (final String shopid : shopids) {
-                            String itemsids = null, quantity = null, beforeimg = "", afterimg = "";
-                            List<QuantityDto> shopquantities = quanityRepository.queryfordate(new GetAllData(), date, shopid);
-                            if (shopquantities.size() >= 1) {
-                                for (QuantityDto shopquantity : shopquantities) {
-                                    if (itemsids != null) {
-                                        itemsids += "," + shopquantity.itemid;
-                                    } else {
-                                        itemsids = shopquantity.itemid;
-                                    }
-
-                                    if (quantity != null) {
-                                        quantity += "," + shopquantity.quantity;
-                                    } else {
-                                        quantity = shopquantity.quantity;
-                                    }
-                                }
-                                List<ShopImagesDto> images = shopImagesRepository.queryForSpecficDate(new GetAllData(), date, shopid);
-                                if (images.size() >= 1) {
-                                    beforeimg = images.get(0).beforeImage;
-                                    afterimg = images.get(0).afterImage;
-                                }
-                                if (InternetConnection.checkConnection(getBaseContext())) {
-                                    IApiCalls api = RetrofitClient.instance.retrofit.create(IApiCalls.class);
-                                    Call<Response> apiCall = api.uploadallQuanity(shopid, itemsids, quantity, beforeimg, afterimg);
-                                    apiCall.enqueue(new UploadQuantityManager(new IRestResponseListner<Response>() {
-                                        @Override
-                                        public void onSuccessResponse(Response model) {
-                                            Log.d("upload data of", "" + shopid);
-
-                                            quantityUploaded++;
-                                            Log.d("upload record", "" + quantityUploaded);
-                                            Log.d("total record", "" + totalsize);
-                                            if (quantityUploaded == totalsize) {
-                                                uploadStatus();
-//                                                dialog.dismiss();
-//                                                Toast.makeText(MainActivity.this, "Data statusUploaded", Toast.LENGTH_SHORT).show();
-                                            }
-                                            quanityRepository.removespecfic(new GetAllData(), date, shopid);
-                                            shopImagesRepository.removespecfic(new GetAllData(), date, shopid);
-
-                                        }
-
-                                        @Override
-                                        public void onErrorResponse(APIError erroModel) {
-                                            ;
-
-                                            dialog.dismiss();
-                                            Toast.makeText(MainActivity.this, "Data quantity uploading failure,please try again", Toast.LENGTH_SHORT).show();
-
-                                        }
-                                    }));
-                                } else {
-                                    Toast.makeText(MainActivity.this, "No internet available", Toast.LENGTH_SHORT).show();
-                                    break;
-                                }
+                    uploadStatus();
 
 
-                            }
-                        }
-                    }
 
                 }
 
             }
         });
 
-//Toast.makeText(this,"Result1:"+visitsResults.size(),Toast.LENGTH_LONG).show();
 
-        //    Realm realm = Realm.getDefaultInstance();
-
-        //   realm.beginTransaction();
-
-
-        // RealmResults<TableVisits> Mindest = realm.where(TableVisits.class);
-      //  int z=0;
-      //  for (final String shopid : shopids) {
-
-         //   z++;
-      //  }
-
-
+      /*  mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Refresh the data
+                // Calls setRefreshing(false) when it is finish
+                Toast.makeText(MainActivity.this, "Refreshing", Toast.LENGTH_SHORT).show();
+            }
+        }); */
 
     }
 
+    private void uploadMerchandising(){
+
+        for (QuantityDto quantityDto : localStored) {
+            if (!dates.contains(quantityDto.date)) {
+                dates.add(quantityDto.date);
+
+            }
+            if (!shopids.contains(quantityDto.shopid)) {
+
+                shopids.add(quantityDto.shopid);
+            }
+
+            if (!visitids.contains(quantityDto.visitid)) {
+
+                visitids.add(quantityDto.visitid);
+            }
+
+            if (!dispNames.contains(quantityDto.display)) {
+
+                dispNames.add(quantityDto.display);
+            }
+
+
+
+            //Toast.makeText(MainActivity.this,"s:"+quantityDto.shopid+"v:"+quantityDto.visitid,Toast.LENGTH_LONG).show();
+
+        }
+
+
+
+        for (final String date : dates) {
+
+
+            final int totalsize = shopids.size();
+
+            for (final String shopid : shopids) {
+
+
+                final int totalsize1 = visitids.size();
+                for (final String visitid : visitids) {
+
+                    for (final String dispName : dispNames) {
+
+                        String itemsids = null, quantity = null, beforeimg = null, afterimg = null, display_name=null;
+
+
+                        List<QuantityDto> shopquantities = quanityRepository.queryfordate(new GetAllData(), date, shopid, visitid);
+
+                        if (shopquantities.size() >= 1) {
+                            for (QuantityDto shopquantity : shopquantities) {
+                                if (itemsids != null) {
+                                    itemsids += "," + shopquantity.itemid;
+                                } else {
+                                    itemsids = shopquantity.itemid;
+                                }
+
+                                if (quantity != null) {
+                                    quantity += "," + shopquantity.quantity;
+                                } else {
+                                    quantity = shopquantity.quantity;
+                                }
+
+
+                            }
+
+
+                            List<ShopImagesDto> images = shopImagesRepository.queryForSpecficDate(new GetAllData(), date, shopid, visitid,dispName);
+                            if (images.size() >= 1) {
+
+                                for (ShopImagesDto Images : images) {
+                                    if (beforeimg != null) {
+                                        beforeimg += "," + Images.beforeImage;
+                                    } else {
+                                        beforeimg = Images.beforeImage;
+                                    }
+
+                                    if (afterimg != null) {
+                                        afterimg += "," + Images.afterImage;
+                                    } else {
+                                        afterimg = Images.afterImage;
+                                    }
+
+                                    if (display_name != null) {
+                                        display_name += "," + Images.displayName;
+                                    } else {
+                                        display_name = Images.displayName;
+                                    }
+                                }
+                              //  beforeimg = images.get(0).beforeImage;
+                               // afterimg = images.get(0).afterImage;
+
+                              //  Toast.makeText(MainActivity.this,"DispName:"+display_name,Toast.LENGTH_LONG).show();
+                            }
+                            if (InternetConnection.checkConnection(getBaseContext())) {
+                                IApiCalls api = RetrofitClient.instance.retrofit.create(IApiCalls.class);
+                                Call<Response> apiCall = api.uploadallQuanity(shopid, itemsids, quantity, beforeimg, afterimg,display_name, visitid);
+                                apiCall.enqueue(new UploadQuantityManager(new IRestResponseListner<Response>() {
+                                    @Override
+                                    public void onSuccessResponse(Response model) {
+                                        Log.d("upload data of", "" + shopid);
+
+                                        quantityUploaded++;
+                                        Log.d("upload record", "" + quantityUploaded);
+                                        Log.d("total record", "" + totalsize);
+                                        if (quantityUploaded == totalsize1) {
+                                            //  uploadStatus();
+                                            uploadfeedbacks();
+                                            dialog.dismiss();
+                                            Toast.makeText(MainActivity.this, "Merchandising Data Uploaded", Toast.LENGTH_SHORT).show();
+                                        }
+                                        quanityRepository.removespecfic(new GetAllData(), date, shopid, visitid);
+                                        shopImagesRepository.removespecfic(new GetAllData(), date, shopid, visitid,dispName);
+
+                                    }
+
+                                    @Override
+                                    public void onErrorResponse(APIError erroModel) {
+                                        ;
+
+                                        dialog.dismiss();
+                                        Toast.makeText(MainActivity.this, "Data quantity uploading failure,please try again", Toast.LENGTH_SHORT).show();
+
+                                    }
+                                }));
+                            } else {
+                                Toast.makeText(MainActivity.this, "No internet available", Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+
+
+                        }
+                    }
+                }
+            }
+        }
+
+
+    }
 
     private void uploadStatus() {
         statusUploaded = 0;
         final int size = shopStatuses.size();
         if (size <= 0) {
-            uploadfeedbacks();
+            uploadMerchandising();
+           // uploadfeedbacks();
         } else {
             for (final ShopStatusDto shopStatuse : shopStatuses) {
                 IApiCalls api = RetrofitClient.instance.retrofit.create(IApiCalls.class);
-                Call<Response> apiCall = api.uploadShopStatus(shopStatuse.shopId, shopStatuse.status, shopStatuse.photo, shopStatuse.reason);
+                Call<Response> apiCall = api.uploadShopStatus(shopStatuse.shopId, shopStatuse.status, shopStatuse.photo, shopStatuse.reason,shopStatuse.visitId);
                 apiCall.enqueue(new CommonUploadManger(new IRestResponseListner<Response>() {
                     @Override
                     public void onSuccessResponse(Response model) {
@@ -347,10 +434,11 @@ public class MainActivity extends AppCompatActivity
                         Log.d("total staus record", "" + size);
                         if (statusUploaded == size) {
 
-                            uploadfeedbacks();
+                            uploadMerchandising();
+                           // uploadfeedbacks();
                             Toast.makeText(MainActivity.this, "Data status Uploaded", Toast.LENGTH_SHORT).show();
                         }
-                        shopStatusRepository.removespecfic(new GetAllData(), shopStatuse.date, shopStatuse.shopId);
+                        shopStatusRepository.removespecfic(new GetAllData(), shopStatuse.date, shopStatuse.shopId,shopStatuse.visitId);
 
 
                     }
@@ -360,7 +448,7 @@ public class MainActivity extends AppCompatActivity
                         ;
 
                         dialog.dismiss();
-                        Toast.makeText(MainActivity.this, "Data status uploading failure,please try again", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Data status uploading failure"+shopStatuse.id+" ,please try again ", Toast.LENGTH_SHORT).show();
 
                     }
                 }));
@@ -376,7 +464,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             for (final FeedbackSubmitDto feedbackSubmitDto : feedbacks) {
                 IApiCalls api = RetrofitClient.instance.retrofit.create(IApiCalls.class);
-                Call<Response> apiCall = api.uploadFeedbacks(feedbackSubmitDto.feedbackId, feedbackSubmitDto.shopId, feedbackSubmitDto.response, feedbackSubmitDto.location);
+                Call<Response> apiCall = api.uploadFeedbacks(feedbackSubmitDto.feedbackId, feedbackSubmitDto.shopId, feedbackSubmitDto.response, feedbackSubmitDto.location,feedbackSubmitDto.visitId);
                 apiCall.enqueue(new CommonUploadManger(new IRestResponseListner<Response>() {
                     @Override
                     public void onSuccessResponse(Response model) {
@@ -411,68 +499,79 @@ public class MainActivity extends AppCompatActivity
     private void uploadstocktake() {
         stockuploaded = 0;
         ArrayList<String> shops = new ArrayList<>();
+        ArrayList<String> visits = new ArrayList<>();
+
         final int size = stocktake.size();
         if (size <= 0) {
             uploadcomptitor();
         } else {
-            String shopid = null, location = null, time = null, quantity = null, products = null;
+            String shopid = null, visitid = null, location = null, time = null, quantity = null, products = null;
             for (final QuantityDto quantityDto : stocktake) {
                 if (!shops.contains(quantityDto.shopid)) {
                     shops.add(quantityDto.shopid);
                 }
 
+                if (!visits.contains(quantityDto.visitid)) {
+                    visits.add(quantityDto.visitid);
+                }
 
             }
             final int shopssize = shops.size();
+
+            final int visitssize = visits.size();
             for (final String shop : shops) {
-                List<QuantityDto> shopsquantities = backdoorQuantityRepository.queryforshop(new GetAllData(), shop);
-                for (QuantityDto shopsquantity : shopsquantities) {
-                    if (products != null) {
-                        products += "," + shopsquantity.itemid;
-                    } else {
-                        products = shopsquantity.itemid;
-                    }
 
-                    if (quantity != null) {
-                        quantity += "," + shopsquantity.quantity;
-                    } else {
-                        quantity = shopsquantity.quantity;
-                    }
-                    shopid = shopsquantity.shopid;
-                    location = shopsquantity.location;
-                    time = shopsquantity.timestamp;
-                }
-
-
-                IApiCalls api = RetrofitClient.instance.retrofit.create(IApiCalls.class);
-                Call<Response> apiCall = api.uploadStockTake(quantity, products, shopid, location, time);
-                apiCall.enqueue(new CommonUploadManger(new IRestResponseListner<Response>() {
-                    @Override
-                    public void onSuccessResponse(Response model) {
-                        Log.d("upload stocktake  of", "" + shop);
-
-                        stockuploaded++;
-                        Log.d("upload stocktake record", "" + stockuploaded);
-                        Log.d("total stocktake record", "" + shopssize);
-                        if (stockuploaded == shopssize) {
-                            uploadcomptitor();
-
-                            Toast.makeText(MainActivity.this, "Data stocktake Uploaded", Toast.LENGTH_SHORT).show();
+                for (final String visit : visits) {
+                    List<QuantityDto> shopsquantities = backdoorQuantityRepository.queryforshop(new GetAllData(), shop, visit);
+                    for (QuantityDto shopsquantity : shopsquantities) {
+                        if (products != null) {
+                            products += "," + shopsquantity.itemid;
+                        } else {
+                            products = shopsquantity.itemid;
                         }
-                        backdoorQuantityRepository.removeshopAll(shop);
 
-
+                        if (quantity != null) {
+                            quantity += "," + shopsquantity.quantity;
+                        } else {
+                            quantity = shopsquantity.quantity;
+                        }
+                        shopid = shopsquantity.shopid;
+                        visitid=shopsquantity.visitid;
+                        location = shopsquantity.location;
+                        time = shopsquantity.timestamp;
                     }
 
-                    @Override
-                    public void onErrorResponse(APIError erroModel) {
-                        ;
 
-                        dialog.dismiss();
-                        Toast.makeText(MainActivity.this, "Data stocktake uploading failure,please try again", Toast.LENGTH_SHORT).show();
+                    IApiCalls api = RetrofitClient.instance.retrofit.create(IApiCalls.class);
+                    Call<Response> apiCall = api.uploadStockTake(quantity, products, shopid, location, time,visitid);
+                    apiCall.enqueue(new CommonUploadManger(new IRestResponseListner<Response>() {
+                        @Override
+                        public void onSuccessResponse(Response model) {
+                            Log.d("upload stocktake  of", "" + shop);
 
-                    }
-                }));
+                            stockuploaded++;
+                            Log.d("upload stocktake record", "" + stockuploaded);
+                            Log.d("total stocktake record", "" + shopssize);
+                            if (stockuploaded == visitssize) {
+                                uploadcomptitor();
+
+                                Toast.makeText(MainActivity.this, "Data stocktake Uploaded", Toast.LENGTH_SHORT).show();
+                            }
+                            backdoorQuantityRepository.removeshopAll(shop,visit);
+
+
+                        }
+
+                        @Override
+                        public void onErrorResponse(APIError erroModel) {
+                            ;
+
+                            dialog.dismiss();
+                            Toast.makeText(MainActivity.this, "Data stocktake uploading failure,please try again", Toast.LENGTH_SHORT).show();
+
+                        }
+                    }));
+                }
             }
         }
     }
@@ -486,6 +585,8 @@ public class MainActivity extends AppCompatActivity
             ArrayList<String> displays = new ArrayList<>();
             ArrayList<String> dates = new ArrayList<>();
             ArrayList<String> shops = new ArrayList<>();
+            ArrayList<String> visits = new ArrayList<>();
+
             for (CompetitorQuantityDto quantityDto : competitorQuantityDtoList) {
                 if (!dates.contains(quantityDto.date)) {
                     dates.add(quantityDto.date);
@@ -499,72 +600,79 @@ public class MainActivity extends AppCompatActivity
 
                     shops.add(quantityDto.shopId);
                 }
+
+                if (!visits.contains(quantityDto.visitId)) {
+
+                    visits.add(quantityDto.visitId);
+                }
             }
             final int size = displays.size();
             for (final String date : dates) {
                 for (final String shopid : shops) {
                     for (final String display : displays) {
-                        String itemsids = null, quantity = null, afterimg = "";
-                        List<CompetitorQuantityDto> itemquantities = comptitorQuantityRepository.queryfordate(new GetAllData(), date, shopid, display);
-                        if (itemquantities.size() >= 1) {
-                            for (CompetitorQuantityDto shopquantity : itemquantities) {
-                                if (itemsids != null) {
-                                    itemsids += "," + shopquantity.products;
-                                } else {
-                                    itemsids = shopquantity.products;
+                        for (final String visitid : visits) {
+                            String itemsids = null, quantity = null, afterimg = "";
+                            List<CompetitorQuantityDto> itemquantities = comptitorQuantityRepository.queryfordate(new GetAllData(), date, shopid, display, visitid);
+                            if (itemquantities.size() >= 1) {
+                                for (CompetitorQuantityDto shopquantity : itemquantities) {
+                                    if (itemsids != null) {
+                                        itemsids += "," + shopquantity.products;
+                                    } else {
+                                        itemsids = shopquantity.products;
+                                    }
+
+                                    if (quantity != null) {
+                                        quantity += "," + shopquantity.quantities;
+                                    } else {
+                                        quantity = shopquantity.quantities;
+                                    }
                                 }
+                                List<CompetotorImagesDto> images = comptitorImagesRepository.queryForSpecficDate(new GetAllData(), date, shopid, display, visitid);
+                                if (images.size() >= 1) {
 
-                                if (quantity != null) {
-                                    quantity += "," + shopquantity.quantities;
-                                } else {
-                                    quantity = shopquantity.quantities;
+                                    afterimg = images.get(0).afterImage;
                                 }
-                            }
-                            List<CompetotorImagesDto> images = comptitorImagesRepository.queryForSpecficDate(new GetAllData(), date, shopid, display);
-                            if (images.size() >= 1) {
+                                final String finalItemsids = itemsids;
+                                final String finalQuantity = quantity;
+                                final String finalAfterimg = afterimg;
+                                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        IApiCalls api = RetrofitClient.instance.retrofit.create(IApiCalls.class);
+                                        Call<Response> apiCall = api.uploadallComptitorQuanity(shopid, finalItemsids, finalQuantity, display, finalAfterimg, visitid);
+                                        apiCall.enqueue(new CommonUploadManger(new IRestResponseListner<Response>() {
+                                            @Override
+                                            public void onSuccessResponse(Response model) {
+                                                Log.d("upload compitor data of", "" + shopid + " display " + display);
 
-                                afterimg = images.get(0).afterImage;
-                            }
-                            final String finalItemsids = itemsids;
-                            final String finalQuantity = quantity;
-                            final String finalAfterimg = afterimg;
-                            new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    IApiCalls api = RetrofitClient.instance.retrofit.create(IApiCalls.class);
-                                    Call<Response> apiCall = api.uploadallComptitorQuanity(shopid, finalItemsids, finalQuantity, display, finalAfterimg);
-                                    apiCall.enqueue(new CommonUploadManger(new IRestResponseListner<Response>() {
-                                        @Override
-                                        public void onSuccessResponse(Response model) {
-                                            Log.d("upload compitor data of", "" + shopid + " display " + display);
+                                                comptitorquantityuploaded++;
+                                                Log.d("upload compitor record", "" + comptitorquantityuploaded);
+                                                Log.d("total compitor record", "" + size);
+                                                if (comptitorquantityuploaded == size) {
+                                                    uploadpops();
 
-                                            comptitorquantityuploaded++;
-                                            Log.d("upload compitor record", "" + comptitorquantityuploaded);
-                                            Log.d("total compitor record", "" + size);
-                                            if (comptitorquantityuploaded == size) {
-                                                uploadpops();
+                                                    Toast.makeText(MainActivity.this, "Data Competitor Uploaded", Toast.LENGTH_SHORT).show();
+                                                }
+                                                comptitorQuantityRepository.removespecfic(new GetAllData(), date, display, shopid, visitid);
+                                                List<CompetotorImagesDto> images = comptitorImagesRepository.query(new GetAllData());
+                                                comptitorImagesRepository.removespecfic(new GetAllData(), date, shopid, display, visitid);
 
-                                                Toast.makeText(MainActivity.this, "Data Competitor Uploaded", Toast.LENGTH_SHORT).show();
                                             }
-                                            comptitorQuantityRepository.removespecfic(new GetAllData(), date, display, shopid);
-                                            List<CompetotorImagesDto> images = comptitorImagesRepository.query(new GetAllData());
-                                            comptitorImagesRepository.removespecfic(new GetAllData(), date, shopid, display);
 
-                                        }
+                                            @Override
+                                            public void onErrorResponse(APIError erroModel) {
+                                                ;
 
-                                        @Override
-                                        public void onErrorResponse(APIError erroModel) {
-                                            ;
+                                                dialog.dismiss();
+                                                Toast.makeText(MainActivity.this, "Data Competitor uploading failure,please try again", Toast.LENGTH_SHORT).show();
 
-                                            dialog.dismiss();
-                                            Toast.makeText(MainActivity.this, "Data Competitor uploading failure,please try again", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }));
 
-                                        }
-                                    }));
+                                    }
+                                }, 200);
 
-                                }
-                            }, 200);
-
+                            }
                         }
                     }
                 }
@@ -583,7 +691,7 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void run() {
                     IApiCalls api = RetrofitClient.instance.retrofit.create(IApiCalls.class);
-                    Call<Response> apiCall = api.uploadPops(popSubmitDto.popid, popSubmitDto.shopid, popSubmitDto.quantity, popSubmitDto.photo, popSubmitDto.location, popSubmitDto.timestamp);
+                    Call<Response> apiCall = api.uploadPops(popSubmitDto.popid, popSubmitDto.shopid, popSubmitDto.quantity, popSubmitDto.photo, popSubmitDto.location, popSubmitDto.timestamp,popSubmitDto.visitid);
                     apiCall.enqueue(new CommonUploadManger(new IRestResponseListner<Response>() {
                         @Override
                         public void onSuccessResponse(Response model) {
@@ -619,7 +727,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    private void uploadExpiredItems() {
+   private void uploadExpiredItems() {
         expireduploaded = 0;
         final int size = expiredItems.size();
         if (expiredItems.size() <= 0) {
@@ -627,7 +735,7 @@ public class MainActivity extends AppCompatActivity
         }
         for (final ExpiredItemDto expiredItemDto : expiredItems) {
             IApiCalls api = RetrofitClient.instance.retrofit.create(IApiCalls.class);
-            Call<Response> apiCall = api.uploadExpiredItems(expiredItemDto.location, expiredItemDto.timestamp, expiredItemDto.expired, expiredItemDto.nearexpired, expiredItemDto.itemid, expiredItemDto.shopid);
+            Call<Response> apiCall = api.uploadExpiredItems(expiredItemDto.location, expiredItemDto.timestamp, expiredItemDto.expired, expiredItemDto.nearexpired, expiredItemDto.itemid, expiredItemDto.shopid,expiredItemDto.visitid);
             apiCall.enqueue(new CommonUploadManger(new IRestResponseListner<Response>() {
                 @Override
                 public void onSuccessResponse(Response model) {
@@ -659,13 +767,50 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    private void updateData()
+    {
+        ShopsListAdopter  adapter = new ShopsListAdopter(data, MainActivity.this);
+        layoutBinding.appBar.mainContent.rcvShops.setAdapter(adapter);
+    }
 
     private void setDataAdopter() {
         if (data.size() >= 1) {
+
+
+
+    /*        ArrayList1 arrayList1=new ArrayList1();
+            arrayList1.setMyArrayList(visitsResults);
+
+            List<VisitsDto> checkAll = visitsRepository.query(new GetAllData());
+            if(checkAll.size()!=0) {
+                for (int t = 0; t < data.size(); t++) {
+                    List<VisitsDto> completedZero = visitsRepository.queryforVisitsOne(new GetAllData(), data.get(t).getId());
+                    if (completedZero.get(t).getCompleted() == 0) {
+
+                        String num=Integer.toString(1);
+                        data.get(t).setVisitId(num);
+                       // Toast.makeText(this, "Shopid:" + data.get(t).getId() + "data Visit id: " + data.get(t).getShopvisitid(), Toast.LENGTH_LONG).show();
+
+                    }
+
+                    Toast.makeText(this,"Vists has data",Toast.LENGTH_LONG).show();
+
+                    else if (completedZero.get(t).getCompleted() == 1) {
+
+                        // data.get(t).setShopvisitid(completedZero.get(0).getVisitid());
+                        Toast.makeText(this, "else Shopid:" + data.get(t).getId() + "data Visit id: " + data.get(t).getShopvisitid(), Toast.LENGTH_LONG).show();
+                    }
+                    Toast.makeText(this,"Vists has data",Toast.LENGTH_LONG).show();
+                }
+            }else{
+
+                Toast.makeText(this,"No data is visits",Toast.LENGTH_LONG).show();
+            }
+*/
             layoutBinding.appBar.mainContent.rcvShops.setVisibility(View.VISIBLE);
             layoutBinding.appBar.mainContent.txtnofound.setVisibility(View.GONE);
 
-            ShopsListAdopter adapter = new ShopsListAdopter(data, MainActivity.this);
+            adapter = new ShopsListAdopter(data, MainActivity.this);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
 
             linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -679,11 +824,14 @@ public class MainActivity extends AppCompatActivity
             paint.setPathEffect(new DashPathEffect(new float[]{25.0f, 25.0f}, 0));
             layoutBinding.appBar.mainContent.rcvShops.addItemDecoration(
                     new HorizontalDividerItemDecoration.Builder(MainActivity.this).paint(paint).build());
-            adapter.notifyDataSetChanged();
+           // adapter.notifyDataSetChanged();
         } else {
             layoutBinding.appBar.mainContent.rcvShops.setVisibility(View.GONE);
             layoutBinding.appBar.mainContent.txtnofound.setVisibility(View.VISIBLE);
+          //  adapter.notifyDataSetChanged();
         }
+
+      adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -791,12 +939,83 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onResume(){
+
+           super.onResume();
+        ShopsListAdopter  adapter = new ShopsListAdopter(data, MainActivity.this);
+        layoutBinding.appBar.mainContent.rcvShops.setAdapter(adapter);
+    }
+
+    @Override
     public void onSuccessResponse(List<ShopDto> model) {
 
-        repository.removeAll();
-        repository.add(model);
-        data = model;
-        setDataAdopter();
+       if(model.size()>1) {
+
+        //   List<ShopDto> day = repository.queryfordate(new GetAllData(), model.get(0).getDay());
+
+           try {
+                day1 = repository.query(new GetAllData());
+                databseDate = day1.get(0).getDay();
+                latestDate = model.get(0).getDay();
+
+               if (databseDate.equals(latestDate)) {
+
+            //   Toast.makeText(MainActivity.this,"Not Removing visits",Toast.LENGTH_LONG).show();
+           }else{
+
+               visitsRepository.removeAll();
+             //  Toast.makeText(MainActivity.this,"Removing visits",Toast.LENGTH_LONG).show();
+
+           }
+
+             //  Toast.makeText(MainActivity.this, "Server : " + latestDate, Toast.LENGTH_LONG).show();
+              // Toast.makeText(MainActivity.this,"Databse :"+databseDate,Toast.LENGTH_LONG).show();
+           }catch(Exception e){
+
+
+           }
+
+
+           List<VisitsDto> checkAll = visitsRepository.query(new GetAllData());
+           if (checkAll.size() == 0) {
+
+               for (int k = 0; k < model.size(); k++) {
+
+                   //  String num=Integer.toString(1);
+                   model.get(k).setVisitId(1);
+
+
+                   VisitsDto visitdto = new VisitsDto();
+                   visitdto.setSchedularid(model.get(k).getId());
+                   visitdto.setVisitid(1);
+                   visitdto.setCompleted(0);
+                   visitsRepository.add(visitdto);
+
+
+                   //  Toast.makeText(this,"Shop Table Visitid : "+  model.get(k).getVisitId()+" comp: "+visitdto.getCompleted(),Toast.LENGTH_LONG).show();
+               }
+
+           } else {
+
+
+               //+   Toast.makeText(this,"Data Exists: ",Toast.LENGTH_LONG).show();
+
+
+           }
+
+           repository.removeAll();
+           repository.add(model);
+           data = model;
+
+            driveid = model.get(0).getDrive_id();
+       }
+       try {
+           setDataAdopter();
+       }catch (Exception e){
+
+
+       }
+
         IApiCalls api = RetrofitClient.instance.retrofit.create(IApiCalls.class);
         Call<List<Pop>> apiCall = api.getpops();
         apiCall.enqueue(new PopManger(new IRestResponseListner<List<Pop>>() {
@@ -813,13 +1032,14 @@ public class MainActivity extends AppCompatActivity
                 dialog.dismiss();
             }
         }));
-        Call<List<ShopOptionDto>> componentCall = api.getcomponent();
+        Call<List<ShopOptionDto>> componentCall = api.getcomponent(""+driveid);
         componentCall.enqueue(new ShopOptionRestManager(new IRestResponseListner<List<ShopOptionDto>>() {
             @Override
             public void onSuccessResponse(List<ShopOptionDto> model) {
                 Log.d("response of Component ", +model.size() + "");
                 shopOptionsRepository.removeAll();
                 shopOptionsRepository.add(model);
+
 
             }
 
@@ -846,12 +1066,12 @@ public class MainActivity extends AppCompatActivity
         for (final ShopDto shopDto : model) {
             ////////////////////// Testing Code Visits Table /////////////////
 
-            int datasize=data.size();
+    /*        int datasize=data.size();
 
                 result = visitsRepository.queryforVisits(new GetAllData(), shopDto.getId(), 1);
 
 
-                if (result.size() == 0) {
+            if (result.size() == 0) {
 
                 //    Toast.makeText(MainActivity.this, "No record", Toast.LENGTH_LONG).show();
                 } else {
@@ -862,8 +1082,11 @@ public class MainActivity extends AppCompatActivity
                   //      Toast.makeText(MainActivity.this, "" + result.get(t).getSchedularid(), Toast.LENGTH_LONG).show();
                     }
 
-            }
+            } */
             ////////////////// Testing Code Visits Table //////////////////////
+
+           // String num=Integer.toString(1);
+            shopDto.setVisitId(1);
 
             if (InternetConnection.checkConnection(MainActivity.this)) {
                 IApiCalls porductapi = RetrofitClient.instance.retrofit.create(IApiCalls.class);
@@ -882,6 +1105,7 @@ public class MainActivity extends AppCompatActivity
                             item.setId(products.getId());
                             item.setShopid(shopDto.getId() + "");
                             item.setImageurl(products.getPlenogram());
+                            item.setDisplayid(""+products.getDisplayId());
                             items.add(item);
 
                         }
@@ -901,14 +1125,29 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        for(int i=0 ; i<visitsResults.size() ; i++){
-
-        //    Toast.makeText(this,"Visits Result:"+visitsResults.get(i),Toast.LENGTH_LONG).show();
-
-        }
 
 
-     //   Toast.makeText(this,"Result2:"+visitsResults.size(),Toast.LENGTH_LONG).show();
+        IApiCalls feedbackAnswerapi = RetrofitClient.instance.retrofit.create(IApiCalls.class);
+        Call<List<FeedBackAnswersDto>> feedbackapiCall1 = feedbackAnswerapi.getfeedbcakAnswer();
+        feedbackapiCall1.enqueue(new FeedbackAnswerManager(new IRestResponseListner<List<FeedBackAnswersDto>>() {
+            @Override
+            public void onSuccessResponse(List<FeedBackAnswersDto> model) {
+                Log.d("response of feedbacks ", "");
+
+
+                repositoryFeedbackAnswers.removeAll();
+                repositoryFeedbackAnswers.add(model);
+
+
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onErrorResponse(APIError erroModel) {
+                Log.d("response of feedbacks ", "" + erroModel.message);
+            }
+        }));
+
 
 
         IApiCalls feedbackapi = RetrofitClient.instance.retrofit.create(IApiCalls.class);
@@ -917,6 +1156,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onSuccessResponse(List<FeedBackDto> model) {
                 Log.d("response of feedbacks ", "");
+
                 repositoryFeedback.removeAll();
                 repositoryFeedback.add(model);
                 dialog.dismiss();
@@ -954,6 +1194,7 @@ public class MainActivity extends AppCompatActivity
             IApiCalls api = RetrofitClient.instance.retrofit.create(IApiCalls.class);
             Call<List<ShopDto>> apiCall = api.getShopsLatest(userModel.useId + "");
             apiCall.enqueue(new ShopsManager(this));
+
 
 
 

@@ -8,15 +8,28 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class ImeiDto {
-    @SerializedName("message")
+    @SerializedName("id")
     @Expose
-    private String message;
+    private int id;
 
-    public String getMessage() {
-        return message;
+    private String imei;
+
+    public void setImei(String imei) {
+        this.imei = imei;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public String getImei(){
+
+        return imei;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
+    public int getId() {
+
+        return id;
     }
 }

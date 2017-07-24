@@ -19,6 +19,7 @@ public class PopSubmitMapper  implements Mapper<TablePopSubmit, PopSubmitDto> {
         popSubmitDto.timestamp=tablePopSubmit.getTimestamp();
         popSubmitDto.shopid=tablePopSubmit.getShopid();
         popSubmitDto.location=tablePopSubmit.getLocation();
+        popSubmitDto.visitid=tablePopSubmit.getVisitid();
         return popSubmitDto;
     }
 }

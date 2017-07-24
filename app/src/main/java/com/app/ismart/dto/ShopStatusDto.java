@@ -12,4 +12,7 @@ public class ShopStatusDto {
     public String photo;
     public String date;
     public String location="";
+    public String visitId;
+    public String startTime;
+    public String endTime;
 }

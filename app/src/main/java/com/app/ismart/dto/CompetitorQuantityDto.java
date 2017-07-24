@@ -13,6 +13,7 @@ public class CompetitorQuantityDto {
     public String location;
     public  String displayId;
     public  String display;
+    public String visitId;
     public int id;
 
 }

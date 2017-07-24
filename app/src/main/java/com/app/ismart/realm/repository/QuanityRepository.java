@@ -40,6 +40,7 @@ public class QuanityRepository implements IRepository<QuantityDto> {
                 newsRealm.setShopId(item.shopid);
                 newsRealm.setDate(item.date);
                 newsRealm.setdisplay(item.display);
+                newsRealm.setVisitId(item.visitid);
 
             }
         });
@@ -61,6 +62,7 @@ public class QuanityRepository implements IRepository<QuantityDto> {
                     newsRealm.setShopId(item.shopid);
                     newsRealm.setDate(item.date);
                     newsRealm.setdisplay(item.display);
+                    newsRealm.setVisitId(item.visitid);
 
                 }
             });
@@ -71,13 +73,14 @@ public class QuanityRepository implements IRepository<QuantityDto> {
     public void update(QuantityDto item) {
 
         TablesQuantity toEdit = realm.where(TablesQuantity.class)
-                .equalTo("itemId", item.itemid).equalTo("date",item.date).equalTo("shopId",item.shopid).equalTo("display",item.display).findFirst();
+                .equalTo("itemId", item.itemid).equalTo("date",item.date).equalTo("shopId",item.shopid).equalTo("display",item.display).equalTo("visitId",item.visitid).findFirst();
         realm.beginTransaction();
         toEdit.setItemId(item.itemid);
         toEdit.setQuantity(item.quantity);
         toEdit.setShopId(item.shopid);
         toEdit.setDate(item.date);
         toEdit.setdisplay(item.display);
+        toEdit.setVisitId(item.visitid);
         realm.commitTransaction();
     }
 
@@ -99,10 +102,10 @@ public class QuanityRepository implements IRepository<QuantityDto> {
         realm.commitTransaction();
     }
 
-    public void removespecfic(Specification specification,String date,String shopid) {
+    public void removespecfic(Specification specification,String date,String shopid,String visitid) {
         realm.beginTransaction();
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TablesQuantity> realmResults = realmSpecification.toRealmQuantitymResults(realm,date,shopid);
+        final RealmResults<TablesQuantity> realmResults = realmSpecification.toRealmQuantitymResultsVisits(realm,date,shopid,visitid);
         realmResults.clear();
         realm.commitTransaction();
     }
@@ -135,9 +138,9 @@ public class QuanityRepository implements IRepository<QuantityDto> {
         return newses;
 
     }
-    public List<QuantityDto> queryfordate(Specification specification,String date,String shopid) {
+    public List<QuantityDto> queryfordate(Specification specification,String date,String shopid,String visitid) {
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TablesQuantity> realmResults = realmSpecification.toRealmQuantitymResults(realm,date,shopid);
+        final RealmResults<TablesQuantity> realmResults = realmSpecification. toRealmQuantitymVisits(realm,date,shopid,visitid);
 
         final List<QuantityDto> newses = new ArrayList<>();
         QuantityMapper mapper = new QuantityMapper();
@@ -165,6 +168,25 @@ public class QuanityRepository implements IRepository<QuantityDto> {
         return newses;
 
     }
+
+    public List<QuantityDto> queryforitemVisits(Specification specification,String date,String shopid,String itemid,String display,String visitid) {
+        final RealmSpecification realmSpecification = (RealmSpecification) specification;
+        final RealmResults<TablesQuantity> realmResults = realmSpecification.toRealmQuantitymResultsQuantityVisits(realm,date,shopid,itemid,display,visitid);
+
+        final List<QuantityDto> newses = new ArrayList<>();
+        QuantityMapper mapper = new QuantityMapper();
+        for (TablesQuantity item : realmResults) {
+            QuantityDto dto = mapper.map(item);
+            newses.add(dto);
+        }
+
+
+        return newses;
+
+    }
+
+
+
     public List<QuantityDto> queryforitem(Specification specification,String date,String shopid,String itemid,String display) {
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
         final RealmResults<TablesQuantity> realmResults = realmSpecification.toRealmQuantitymResults(realm,date,shopid,itemid,display);
@@ -180,4 +202,23 @@ public class QuanityRepository implements IRepository<QuantityDto> {
         return newses;
 
     }
+
+
+    public List<QuantityDto> queryforVisits(Specification specification,String date,String shopid,String visitid) {
+        final RealmSpecification realmSpecification = (RealmSpecification) specification;
+        final RealmResults<TablesQuantity> realmResults = realmSpecification.toRealmQuantitymResultsVisits(realm,date,shopid,visitid);
+
+        final List<QuantityDto> newses = new ArrayList<>();
+        QuantityMapper mapper = new QuantityMapper();
+        for (TablesQuantity item : realmResults) {
+            QuantityDto dto = mapper.map(item);
+            newses.add(dto);
+        }
+
+
+        return newses;
+
+    }
+
+   // toRealmQuantitymResultsVisits(Realm realm, String date, String shopid, String visitid)
 }

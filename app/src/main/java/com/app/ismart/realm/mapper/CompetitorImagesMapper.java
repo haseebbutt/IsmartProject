@@ -18,6 +18,7 @@ public class CompetitorImagesMapper  implements Mapper<TableComptitorImages, Com
         imagesDto.displayid=tableComptitorImages.getDisplayid();
         imagesDto.id=tableComptitorImages.getId();
         imagesDto.shopid=tableComptitorImages.getShopid();
+        imagesDto.visitid=tableComptitorImages.getVisitid();
         return imagesDto;
     }
 }

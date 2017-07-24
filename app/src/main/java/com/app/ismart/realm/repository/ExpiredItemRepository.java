@@ -42,6 +42,7 @@ public class ExpiredItemRepository implements IRepository<ExpiredItemDto> {
                 newsRealm.setNearexpired(item.nearexpired);
                 newsRealm.setLocation(item.location);
                 newsRealm.setTimestamp(item.timestamp);
+                newsRealm.setVisitId(item.visitid);
 
 
             }
@@ -59,7 +60,7 @@ public class ExpiredItemRepository implements IRepository<ExpiredItemDto> {
     public void update(ExpiredItemDto item) {
 
         TableExpiredItems toEdit = realm.where(TableExpiredItems.class)
-                .equalTo("itemId", item.itemid).equalTo("date",item.date).equalTo("shopId",item.shopid).findFirst();
+                .equalTo("itemId", item.itemid).equalTo("date",item.date).equalTo("shopId",item.shopid).equalTo("visitId",item.visitid).findFirst();
         realm.beginTransaction();
         toEdit.setItemId(item.itemid);
         toEdit.setExpired(item.expired);
@@ -68,13 +69,14 @@ public class ExpiredItemRepository implements IRepository<ExpiredItemDto> {
         toEdit.setNearexpired(item.nearexpired);
         toEdit.setLocation(item.location);
         toEdit.setTimestamp(item.timestamp);
+        toEdit.setVisitId(item.visitid);
         realm.commitTransaction();
     }
 
     @Override
     public void remove(ExpiredItemDto item) {
         realm.beginTransaction();
-        RealmResults<TableExpiredItems> results = realm.where(TableExpiredItems.class).equalTo("shopId", item.shopid).equalTo("date", item.date).equalTo("itemId", item.itemid).findAll();
+        RealmResults<TableExpiredItems> results = realm.where(TableExpiredItems.class).equalTo("shopId", item.shopid).equalTo("date", item.date).equalTo("itemId", item.itemid).equalTo("visitId", item.visitid).findAll();
         results.clear();
         realm.commitTransaction();
 
@@ -120,9 +122,9 @@ public class ExpiredItemRepository implements IRepository<ExpiredItemDto> {
 
     }
 
-    public List<ExpiredItemDto> queryforitem(Specification specification,String date,String shopid,String itemid) {
+    public List<ExpiredItemDto> queryforitem(Specification specification,String date,String shopid,String itemid,String visitid) {
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TableExpiredItems> realmResults = realmSpecification.toRealmExpiredmResults(realm,date,shopid,itemid);
+        final RealmResults<TableExpiredItems> realmResults = realmSpecification.toRealmExpiredmResults(realm,date,shopid,itemid,visitid);
 
         final List<ExpiredItemDto> newses = new ArrayList<>();
         ExpiredMapper mapper = new ExpiredMapper();
@@ -135,9 +137,9 @@ public class ExpiredItemRepository implements IRepository<ExpiredItemDto> {
         return newses;
 
     }
-    public List<ExpiredItemDto> queryforitem(Specification specification,String date,String shopid) {
+    public List<ExpiredItemDto> queryforitem(Specification specification,String date,String shopid,String visitid) {
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TableExpiredItems> realmResults = realmSpecification.toRealmExpiredmResults(realm,date,shopid);
+        final RealmResults<TableExpiredItems> realmResults = realmSpecification.toRealmExpiredmResults(realm,date,shopid,visitid);
 
         final List<ExpiredItemDto> newses = new ArrayList<>();
         ExpiredMapper mapper = new ExpiredMapper();

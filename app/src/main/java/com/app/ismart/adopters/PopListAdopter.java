@@ -93,7 +93,7 @@ public class PopListAdopter extends BaseRecyclerViewAdapter<Pop, PopItemBinding>
                 .findViewById(R.id.editTextDialogUserInput);
         userInput.setHint("Enter quantity");
         final TextView title = (TextView) promptsView
-                .findViewById(R.id.textView1);
+                .findViewById(R.id.reason1);
         title.setText("Enter pop quantity");
         Button submit = (Button) promptsView
                 .findViewById(R.id.btnSubmit);

@@ -19,6 +19,7 @@ public class ExpiredMapper implements Mapper<TableExpiredItems, ExpiredItemDto> 
         expiredItemDto.location=tableExpiredItems.getLocation();
         expiredItemDto.timestamp=tableExpiredItems.getTimestamp();
         expiredItemDto.date=tableExpiredItems.getDate();
+        expiredItemDto.visitid=tableExpiredItems.getVisitId();
         return expiredItemDto;
     }
 }

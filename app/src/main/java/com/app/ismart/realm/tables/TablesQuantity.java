@@ -15,6 +15,7 @@ public class TablesQuantity extends RealmObject {
     private  String itemId;
     private  String display;
     private  String date;
+    private String visitId;
 
     public String getdisplay() {
         return display;
@@ -46,6 +47,10 @@ public class TablesQuantity extends RealmObject {
         this.shopId = shopId;
     }
 
+    public void setVisitId(String visitId) {
+        this.visitId = visitId;
+    }
+
     public void setItemId(String itemId) {
         this.itemId = itemId;
     }
@@ -61,6 +66,10 @@ public class TablesQuantity extends RealmObject {
 
     public String getShopId() {
         return shopId;
+    }
+
+    public String getVisitId() {
+        return visitId;
     }
 
     public String getItemId() {

@@ -19,6 +19,7 @@ public class BackdoorQuantityMapper implements Mapper<TableBackdoorQuantity, Qua
         dto.date = tablesQuantity.getDate();
         dto.timestamp=tablesQuantity.getTimestamp();
         dto.location=tablesQuantity.getLocation();
+        dto.visitid=tablesQuantity.getVisitId();
         return dto;
     }
 }

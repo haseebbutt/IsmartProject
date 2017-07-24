@@ -25,10 +25,17 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.app.ismart.MainActivity;
@@ -38,9 +45,12 @@ import com.app.ismart.async.IAsync;
 import com.app.ismart.databinding.FragmentShopcloseBinding;
 import com.app.ismart.dto.ShopDto;
 import com.app.ismart.dto.ShopStatusDto;
+import com.app.ismart.dto.VisitsDto;
 import com.app.ismart.realm.RealmController;
 import com.app.ismart.realm.repository.ShopStatusRepository;
+import com.app.ismart.realm.repository.VisitsRepository;
 import com.app.ismart.realm.specfication.GetAllData;
+import com.app.ismart.realm.tables.TableShops;
 import com.app.ismart.utils.FragmentUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -51,15 +61,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
+import io.realm.Realm;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by Faheem-Abbas on 5/24/2017.
  */
 
-public class FragmentShopClose extends Fragment {
+public class FragmentShopClose extends Fragment implements AdapterView.OnItemSelectedListener{
     FragmentShopcloseBinding layoutBinding;
     private int REQUEST_CAMERA = 12032, SELECT_FILE = 10923;
     private boolean isCamerSelected = false;
@@ -73,6 +88,14 @@ public class FragmentShopClose extends Fragment {
     public ShopDto shopDto;
     public String location;
     public boolean isShopenOpen;
+    VisitsRepository visitsRepository;
+    List<VisitsDto> result;
+    Realm realm;
+    String myDate;
+    SimpleDateFormat format;
+
+
+
 
     @Override
     public void onDestroyView() {
@@ -91,10 +114,31 @@ public class FragmentShopClose extends Fragment {
         layoutBinding.toolbar.setTitleTextColor(Color.WHITE);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         realmController = RealmController.with(this);
+        visitsRepository=new VisitsRepository(realmController.getRealm());
         date = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
+
+        format= new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
+
+        myDate = format.format(new Date());
+
+        //*********Spinner*******///
+
+        Spinner spinner= (Spinner)layoutBinding.getRoot().findViewById(R.id.Status);
+        spinner.setOnItemSelectedListener(this);
+
+      //  adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+      //  spinner.setAdapter(adapter);
+
+
+
+        //*********Spinner*******///
+
+      //  Toast.makeText((Activity)context,"My Date:"+myDate,Toast.LENGTH_LONG).show();
+
         shopStatusRepository= new ShopStatusRepository(realmController.getRealm());
-        final List<ShopStatusDto> shopstatusexists=shopStatusRepository.queryfordate(new GetAllData(),date,""+shopDto.getId());
+        final List<ShopStatusDto> shopstatusexists=shopStatusRepository.queryfordate(new GetAllData(),date,""+shopDto.getId(),""+shopDto.getVisitId());
         if(shopstatusexists.size()>=1){
+
             savedImage=shopstatusexists.get(0).photo;
             if(!savedImage.equals("")) {
                 Bitmap photo = Base64ToBitmap(savedImage);
@@ -102,13 +146,17 @@ public class FragmentShopClose extends Fragment {
             }
             reason=shopstatusexists.get(0).reason;
             layoutBinding.editText.setText(""+reason);
+
         }
         if(isShopenOpen){
             layoutBinding.editText.setText("Shop is open");
             layoutBinding.editText.setVisibility(View.GONE);
             layoutBinding.textView9.setVisibility(View.GONE);
+            layoutBinding.Status.setVisibility(View.GONE);
             layoutBinding.editText.setEnabled(false);
         }
+
+
         layoutBinding.btntakephoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,6 +178,8 @@ public class FragmentShopClose extends Fragment {
                 else if(layoutBinding.editText.getText().toString().equals("")){
                     Toast.makeText(context, "please enter reason", Toast.LENGTH_SHORT).show();
                 }
+
+
                  else {
                     new AsyncDispatcher(new IAsync() {
 
@@ -158,22 +208,76 @@ public class FragmentShopClose extends Fragment {
                             shopStatusDto.shopId=""+shopDto.getId();
                             shopStatusDto.date=date;
                             if(isShopenOpen){
-                                shopStatusDto.status="open";
+                                shopStatusDto.status="1";
                             }
                             else{
-                                shopStatusDto.status="close";
+                                shopStatusDto.status="0";
+
                             }
 
                             shopStatusDto.photo=savedImage;
                             shopStatusDto.location=location;
+                            shopStatusDto.visitId=""+shopDto.getVisitId();
+                            shopStatusDto.startTime=myDate;
+                            shopStatusDto.endTime=""+0;
                             String reason=layoutBinding.editText.getText().toString();
                             shopStatusDto.reason=reason;
+
+
                             if(shopstatusexists.size()>=1){
                                 shopStatusDto.id=shopstatusexists.get(0).id;
+                           //     Toast.makeText(getActivity(),"shopid:"+shopStatusDto.shopId+" visitid1:"+shopStatusDto.visitId,Toast.LENGTH_LONG).show();
                                 shopStatusRepository.update(shopStatusDto);
+
                             }else{
+                            //    Toast.makeText(getActivity(),"shopid:"+shopStatusDto.shopId+"visitid2:"+shopStatusDto.visitId,Toast.LENGTH_LONG).show();
                                 shopStatusRepository.add(shopStatusDto);
                             }
+
+                            if(!isShopenOpen) {
+
+                                realm = Realm.getDefaultInstance();
+                                VisitsDto visitdto = new VisitsDto();
+
+                                visitdto.setVisitid(shopDto.getVisitId());
+                                visitdto.setSchedularid(shopDto.getId());
+
+                                visitsRepository.update(visitdto);
+
+                                ///////////////////////////////////////////
+
+                                VisitsDto visitdto1 = new VisitsDto();
+
+                                int visitAdded = shopDto.getVisitId() + 1;
+
+                                visitdto1.setSchedularid(shopDto.getId());
+                                visitdto1.setVisitid(visitAdded);
+                                visitdto1.setCompleted(0);
+                                visitsRepository.add(visitdto1);
+
+                                String shopid = Integer.toString(shopDto.getId());
+
+                                String addonstring1 = Integer.toString(shopDto.getVisitId() + 1);
+
+
+///////////////////////// Update //////////////////////
+                                // This query is fast because "character" is an indexed field
+                                TableShops kanjoComp = realm.where(TableShops.class)
+                                        .equalTo("shopId", shopid)
+                                        .findFirst();
+                                realm.beginTransaction();
+                                if (kanjoComp == null) {
+                                    TableShops kanjiComp = realm.createObject(TableShops.class);
+                                  //  Toast.makeText((Activity) getContext(), "No data in TableShops", Toast.LENGTH_LONG).show();
+                                } else {
+                                    kanjoComp.setVisitId(addonstring1);
+                                 //   Toast.makeText((Activity)getContext(), "id :"+kanjoComp.getId()+"visitid :"+kanjoComp.getVisitId()+"name :"+kanjoComp.getName()+"address :"+kanjoComp.getAddress(), Toast.LENGTH_SHORT).show();
+                                }
+                                realm.commitTransaction();
+
+                                shopDto.setVisitId(visitAdded);
+                            }
+
                             Toast.makeText(context, "Shop status saved", Toast.LENGTH_SHORT).show();
                             if(!isShopenOpen) {
                                 getActivity().getSupportFragmentManager().popBackStack();
@@ -187,11 +291,74 @@ public class FragmentShopClose extends Fragment {
                         }
                     });
 
+
                 }
 
             }
         });
         return layoutBinding.getRoot();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String item=parent.getItemAtPosition(position).toString();
+
+        if(item.equals("Others")){
+            LayoutInflater li = LayoutInflater.from(context);
+            View promptsView = li.inflate(R.layout.shopstatus_dailog1, null);
+
+            final android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(
+                    context);
+
+            // set prompts.xml to alertdialog builder
+            alertDialogBuilder.setView(promptsView);
+
+            final EditText userInput = (EditText) promptsView.findViewById(R.id.editText2);
+
+            Button submit = (Button) promptsView.findViewById(R.id.btnSubmit);
+            final Button cancel = (Button) promptsView.findViewById(R.id.btnCancel);
+
+
+            // create alert progressdialog
+            final android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+
+            // show it
+            alertDialog.show();
+            submit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    layoutBinding.editText.setText("" + userInput.getText().toString());
+                    reason = "" + userInput;
+
+                    alertDialog.cancel();
+
+                }
+            });
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    alertDialog.cancel();
+                }
+            });
+
+        } else {
+
+            layoutBinding.editText.setText("" + item);
+            reason = "" + item;
+
+            //  Toast.makeText(getActivity(),""+item,Toast.LENGTH_LONG).show();
+            Log.d(TAG, "Here is the Spinner Item Selected " + item);
+        }
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        String item=parent.getItemAtPosition(0).toString();
+
+        layoutBinding.editText.setText(""+item);
+        reason=""+item;
     }
 
     private void selectImage() {

@@ -13,7 +13,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimaryDark"
+            android:background="@color/igrey"
             app:popupTheme="@style/AppTheme.FullScreen.PopupOverlay">
 
 
@@ -50,7 +50,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_weight="1"
-            android:background="@color/colorPrimaryDark"
+            android:background="@color/red"
             android:text="Take Photo"
             android:textColor="@android:color/white" />
 

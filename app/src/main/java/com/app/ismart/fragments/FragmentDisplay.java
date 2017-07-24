@@ -1,5 +1,6 @@
 package com.app.ismart.fragments;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import com.app.ismart.MainActivity;
 import com.app.ismart.R;
@@ -91,6 +93,7 @@ public class FragmentDisplay extends Fragment implements IRestResponseListner<Li
         repository = new ProductRepository(realmController.getRealm());
         quantityrepository = new QuanityRepository(realmController.getRealm());
 
+        View view=layoutBinding.getRoot();
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         List<ItemDto> categories = repository.queryforshop(new GetAllData(), shopDto.getId() + "");
         if (categories.size() >= 1) {
@@ -107,7 +110,7 @@ public class FragmentDisplay extends Fragment implements IRestResponseListner<Li
 
             }
         }
-        layoutBinding.imgtakephoto.setOnClickListener(new View.OnClickListener() {
+     /*   layoutBinding.imgtakephoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentChecking fragmentChecking = new FragmentChecking();
@@ -123,14 +126,18 @@ public class FragmentDisplay extends Fragment implements IRestResponseListner<Li
                 fragmentImages.display=displaylist;
                 new FragmentUtils(getActivity(), fragmentImages, R.id.fragContainer);
             }
-        });
+        }); */
         layoutBinding.expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
                 itemid.clear();
                 String display = expandableListTitle.get(groupPosition);
+
+              //  Toast.makeText(getActivity(),""+display,Toast.LENGTH_LONG).show();
                 CategoryDto item = expandableListDetail.get(expandableListTitle.get(groupPosition)).get(childPosition);
+
+            //    Toast.makeText(getActivity(),"item:"+item.getName(),Toast.LENGTH_LONG).show();
                 FragmentTakeQuantity fragment = new FragmentTakeQuantity();
                 fragment.item = filterList(display, item.getName(), expandableListItemsDetail);
                 fragment.shopDto = shopDto;
@@ -141,7 +148,7 @@ public class FragmentDisplay extends Fragment implements IRestResponseListner<Li
         });
 
 
-        return layoutBinding.getRoot();
+        return view;
     }
 
     public void setAdopter(List<ItemDto> list) {
@@ -155,6 +162,7 @@ public class FragmentDisplay extends Fragment implements IRestResponseListner<Li
                 DisplayDto dto=new DisplayDto();
                 dto.display=itemDto.getDisplay();
                 dto.displayimage=itemDto.getImageurl();
+                dto.displayid=itemDto.getDisplayid();
                 displaylist.add(dto);
             }
         }
@@ -163,7 +171,7 @@ public class FragmentDisplay extends Fragment implements IRestResponseListner<Li
         }
 
         expandableListTitle = new ArrayList<String>(expandableListDetail.keySet());
-        expandableListAdapter = new DisplayAdopter(getContext(), expandableListTitle, expandableListDetail);
+        expandableListAdapter = new DisplayAdopter(getContext(), expandableListTitle, expandableListDetail,displaylist,shopDto);
         layoutBinding.expandableListView.setAdapter(expandableListAdapter);
     }
 
@@ -173,7 +181,7 @@ public class FragmentDisplay extends Fragment implements IRestResponseListner<Li
             if (itemDto.getCategory().equalsIgnoreCase(category) && itemDto.getDisplay().equalsIgnoreCase(display) && !itemid.contains(itemDto.getId()+"")) {
                 items.add(itemDto);
                 itemid.add(itemDto.getId()+"");
-                final List<QuantityDto> itemquantity = quantityrepository.queryforitem(new GetAllData(), date, "" + shopDto.getId(), "" + itemDto.getId(),display);
+                final List<QuantityDto> itemquantity = quantityrepository.queryforitemVisits(new GetAllData(), date, "" + shopDto.getId(), "" + itemDto.getId(),display,""+shopDto.getVisitId());
                 if (itemquantity.size() >= 1) {
                     itemDto.setQuantity(itemquantity.get(0).quantity);
                 }
@@ -219,6 +227,7 @@ public class FragmentDisplay extends Fragment implements IRestResponseListner<Li
             item.setTitle(products.getTitle());
             item.setId(products.getId());
             item.setShopid(shopDto.getId() + "");
+            item.setDisplayid(products.getDisplayId()+"");
             items.add(item);
 
         }

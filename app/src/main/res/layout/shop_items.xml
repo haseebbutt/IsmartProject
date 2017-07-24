@@ -42,6 +42,15 @@
                     android:text="@{shopDto.address}" />
 
 
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:srcCompat="@drawable/revisit"
+                    android:visibility="invisible"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/imageView2"
+                    android:layout_toStartOf="@+id/imageView2" />
 
                 <ImageView
                     android:id="@+id/imageView2"

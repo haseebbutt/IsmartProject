@@ -153,7 +153,7 @@ public class FragmentBackdoorCategories extends Fragment implements IRestRespons
         List<ItemDto> items = new ArrayList<>();
         for (ItemDto itemDto : list) {
             if (itemDto.getCategory().equalsIgnoreCase(category) && !itemid.contains(itemDto.getId()+"")) {
-                final List<QuantityDto> itemquantity =quantityrepository .queryforitem(new GetAllData(), date, "" + shopDto.getId(), "" + itemDto.getId());
+                final List<QuantityDto> itemquantity =quantityrepository .queryforitem(new GetAllData(), date, "" + shopDto.getId(), "" + itemDto.getId(),shopDto.getVisitId()+"");
                 if (itemquantity.size() >= 1) {
                     itemDto.setQuantity(itemquantity.get(0).quantity);
                 }

@@ -14,6 +14,7 @@ import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
+import io.realm.RealmMigration;
 
 
 /**
@@ -40,6 +41,7 @@ public class AppController extends Application implements IAsync {
         mInstance = this;
         new DynamicAsyncTask(this).execute();
         new RetrofitClient(getBaseContext());
+
 
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this)
                 .name(Realm.DEFAULT_REALM_NAME)

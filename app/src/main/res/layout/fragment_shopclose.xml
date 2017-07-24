@@ -8,15 +8,17 @@
         android:background="@color/white"
         android:orientation="vertical"
         android:weightSum="10">
+
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimaryDark"
+            android:background="@color/igrey"
             app:popupTheme="@style/AppTheme.FullScreen.PopupOverlay">
 
 
         </android.support.v7.widget.Toolbar>
+
         <TextView
             android:id="@+id/textView9"
             android:layout_width="match_parent"
@@ -24,21 +26,32 @@
             android:layout_weight=".5"
             android:paddingLeft="10dp"
             android:text="Reason:"
-            android:textSize="24sp"
-            android:textColor="@android:color/background_dark" />
+            android:textColor="@android:color/background_dark"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/Status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:background="@drawable/back_spinner"
+            android:entries="@array/reasons_array"
+            android:prompt="@string/status" />
 
         <EditText
             android:id="@+id/editText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
             android:layout_weight="1"
             android:ems="10"
-            android:inputType="textPersonName"
             android:gravity="left|top"
             android:hint="Enter reason for shop close"
-            android:textSize="18sp" />
-
+            android:inputType="textPersonName"
+            android:paddingLeft="10dp"
+            android:textColor="@color/red"
+            android:textSize="14sp"
+            android:visibility="gone" />
 
 
         <TextView
@@ -48,8 +61,9 @@
             android:layout_weight=".5"
             android:paddingLeft="10dp"
             android:text="Shop photo:"
-            android:textSize="24sp"
-            android:textColor="@android:color/background_dark" />
+            android:textColor="@android:color/background_dark"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:orientation="vertical"
@@ -68,12 +82,12 @@
             android:id="@+id/btntakephoto"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:background="@color/colorPrimaryDark"
-            android:textColor="@android:color/white"
-            android:text="Take Photo" />
+            android:layout_weight="1"
+            android:background="@color/red"
+            android:text="Take Photo"
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/btnSave"

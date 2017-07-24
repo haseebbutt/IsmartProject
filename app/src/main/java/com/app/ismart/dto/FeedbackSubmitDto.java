@@ -10,4 +10,5 @@ public class FeedbackSubmitDto {
     public String response;
     public String location;
     public String date;
+    public String visitId;
 }

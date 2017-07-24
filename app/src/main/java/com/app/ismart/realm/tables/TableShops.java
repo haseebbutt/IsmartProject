@@ -14,14 +14,34 @@ public class TableShops extends RealmObject {
     private String shopId;
     private String name;
     private String address;
+    private String visitId;
+    private String day;
 
     public void setShopId(String shopId) {
         this.shopId = shopId;
     }
 
+    public String getDay() {
+
+        return day;
+    }
+
+    public void setDay(String day) {
+        this.day = day;
+    }
+
     public String getShopId() {
 
         return shopId;
+    }
+
+    public void setVisitId(String visitId) {
+        this.visitId = visitId;
+    }
+
+    public String getVisitId() {
+
+        return visitId;
     }
 
     public int getId() {

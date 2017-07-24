@@ -17,6 +17,8 @@ public class ShopIMagesMapper implements Mapper<TableShopImages, ShopImagesDto> 
         shopImagesDto.afterImage=tableShopImages.getAfterImage();
         shopImagesDto.shopid=tableShopImages.getShopid();
         shopImagesDto.date=tableShopImages.getDate();
+        shopImagesDto.visitid=tableShopImages.getVisitid();
+        shopImagesDto.displayName=tableShopImages.getDisplayName();
         return shopImagesDto;
     }
 }

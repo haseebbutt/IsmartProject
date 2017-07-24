@@ -118,10 +118,10 @@ public class FeedbackRepository implements IRepository<FeedBackDto> {
         realm.commitTransaction();
     }
 
-    public void removespecfic(Specification specification, String date, String shopid) {
+    public void removespecfic(Specification specification, String date, String shopid,String visitid) {
         realm.beginTransaction();
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TableShopStatus> realmResults = realmSpecification.toRealmShopstatusResults(realm, date, shopid);
+        final RealmResults<TableShopStatus> realmResults = realmSpecification.toRealmShopstatusResults(realm, date, shopid,visitid);
         realmResults.clear();
         realm.commitTransaction();
     }

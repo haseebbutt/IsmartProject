@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Shop Listing"
+                android:text="Today Shop List"
                 android:textColor="@android:color/white"
                 android:textSize="30sp"
                 android:textStyle="bold" />

@@ -11,4 +11,15 @@
     <string name="permission_read_phone_state_rationale">IMEI required for login</string>
     <string name="permissions_not_granted_read_phone_state">Permission required to get IMEI.</string>
     <string name="server_url">http://173.212.235.106:81/</string>
+    <string name="status">Select Reason</string>
+
+        <string-array name="reasons_array">
+            <item>Death of Relative</item>
+            <item>Strike in Area</item>
+            <item>Area Sealed</item>
+            <item>Public Holiday</item>
+            <item>Road Maintenance</item>
+            <item>Others</item>
+        </string-array>
+
 </resources>

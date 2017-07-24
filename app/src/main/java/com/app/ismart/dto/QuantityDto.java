@@ -13,4 +13,5 @@ public class QuantityDto {
     public String timestamp;
     public String display;
     public String location;
+    public String visitid;
 }

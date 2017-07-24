@@ -41,6 +41,7 @@ public class BackdoorQuantityRepository implements IRepository<QuantityDto> {
                 newsRealm.setDate(item.date);
                 newsRealm.setTimestamp(item.timestamp);
                 newsRealm.setLocation(item.location);
+                newsRealm.setVisitId(item.visitid);
 
             }
         });
@@ -63,6 +64,7 @@ public class BackdoorQuantityRepository implements IRepository<QuantityDto> {
                     newsRealm.setDate(item.date);
                     newsRealm.setTimestamp(item.timestamp);
                     newsRealm.setLocation(item.location);
+                    newsRealm.setVisitId(item.visitid);
 
 
                 }
@@ -82,6 +84,7 @@ public class BackdoorQuantityRepository implements IRepository<QuantityDto> {
         toEdit.setDate(item.date);
         toEdit.setTimestamp(item.timestamp);
         toEdit.setLocation(item.location);
+        toEdit.setVisitId(item.visitid);
         realm.commitTransaction();
     }
 
@@ -103,10 +106,10 @@ public class BackdoorQuantityRepository implements IRepository<QuantityDto> {
         realm.commitTransaction();
     }
 
-    public void removespecfic(Specification specification, String date, String shopid) {
+    public void removespecfic(Specification specification, String date, String shopid,String visitid) {
         realm.beginTransaction();
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TableBackdoorQuantity> realmResults = realmSpecification.toRealmBackdoorQuantitymResults(realm, date, shopid);
+        final RealmResults<TableBackdoorQuantity> realmResults = realmSpecification.toRealmBackdoorQuantitymResults(realm, date, shopid,visitid);
         realmResults.clear();
         realm.commitTransaction();
     }
@@ -124,8 +127,8 @@ public class BackdoorQuantityRepository implements IRepository<QuantityDto> {
         realm.commitTransaction();
     }
 
-    public void removeshopAll( String shopid) {
-        RealmResults<TableBackdoorQuantity> results = realm.where(TableBackdoorQuantity.class).equalTo("shopId", shopid).findAll();
+    public void removeshopAll( String shopid,String visitid) {
+        RealmResults<TableBackdoorQuantity> results = realm.where(TableBackdoorQuantity.class).equalTo("shopId", shopid).equalTo("visitId", visitid).findAll();
 
 // All changes to data must happen in a transaction
         realm.beginTransaction();
@@ -152,9 +155,9 @@ public class BackdoorQuantityRepository implements IRepository<QuantityDto> {
 
     }
 
-    public List<QuantityDto> queryfordate(Specification specification, String date, String shopid) {
+    public List<QuantityDto> queryfordate(Specification specification, String date, String shopid,String visitid) {
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TableBackdoorQuantity> realmResults = realmSpecification.toRealmBackdoorQuantitymResults(realm, date, shopid);
+        final RealmResults<TableBackdoorQuantity> realmResults = realmSpecification.toRealmBackdoorQuantitymResults(realm, date, shopid,visitid);
 
         final List<QuantityDto> newses = new ArrayList<>();
         BackdoorQuantityMapper mapper = new BackdoorQuantityMapper();
@@ -167,9 +170,9 @@ public class BackdoorQuantityRepository implements IRepository<QuantityDto> {
         return newses;
 
     }
-    public List<QuantityDto> queryforshop(Specification specification, String shopid) {
+    public List<QuantityDto> queryforshop(Specification specification, String shopid,String visitid) {
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TableBackdoorQuantity> realmResults = realmSpecification.toRealmBackdoorQuantitymResults(realm, shopid);
+        final RealmResults<TableBackdoorQuantity> realmResults = realmSpecification.toRealmBackdoorQuantitymResults(realm, shopid,visitid);
 
         final List<QuantityDto> newses = new ArrayList<>();
         BackdoorQuantityMapper mapper = new BackdoorQuantityMapper();
@@ -182,9 +185,9 @@ public class BackdoorQuantityRepository implements IRepository<QuantityDto> {
         return newses;
 
     }
-    public List<QuantityDto> queryforitem(Specification specification, String date, String shopid, String itemid) {
+    public List<QuantityDto> queryforitem(Specification specification, String date, String shopid, String itemid,String visitid) {
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TableBackdoorQuantity> realmResults = realmSpecification.toRealmBackdoorQuantitymResults(realm, date, shopid, itemid);
+        final RealmResults<TableBackdoorQuantity> realmResults = realmSpecification.toRealmBackdoorQuantitymResults(realm, date, shopid, itemid,visitid);
 
         final List<QuantityDto> newses = new ArrayList<>();
         BackdoorQuantityMapper mapper = new BackdoorQuantityMapper();

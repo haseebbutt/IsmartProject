@@ -15,6 +15,7 @@ public class TableComptitorImages extends RealmObject {
     private  String afterImage;
     private String date;
     private String displayid;
+    private String visitid;
 
     public void setId(int id) {
         this.id = id;
@@ -22,6 +23,10 @@ public class TableComptitorImages extends RealmObject {
 
     public void setShopid(String shopid) {
         this.shopid = shopid;
+    }
+
+    public void setVisitid(String visitid) {
+        this.visitid = visitid;
     }
 
     public void setBeforeImage(String beforeImage) {
@@ -46,6 +51,10 @@ public class TableComptitorImages extends RealmObject {
 
     public String getShopid() {
         return shopid;
+    }
+
+    public String getVisitid() {
+        return visitid;
     }
 
     public String getBeforeImage() {

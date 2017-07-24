@@ -1,16 +1,25 @@
 package com.app.ismart.adopters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.ismart.R;
 import com.app.ismart.dto.CategoryDto;
+import com.app.ismart.dto.DisplayDto;
+import com.app.ismart.dto.ShopDto;
+import com.app.ismart.fragments.FragmentChecking;
+import com.app.ismart.fragments.FragmentImages;
+import com.app.ismart.utils.FragmentUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -23,13 +32,21 @@ public class DisplayAdopter extends BaseExpandableListAdapter {
     private Context context;
     private List<String> expandableListTitle;
     private HashMap<String, List<CategoryDto>> expandableListDetail;
+    ImageView capture;
+    ImageView planogram;
+    public ShopDto shopDto;
+    ArrayList<DisplayDto> displaylist = new ArrayList<>();
+    int position;
 
     public DisplayAdopter(Context context, List<String> expandableListTitle,
-                          HashMap<String, List<CategoryDto>> expandableListDetail) {
+                          HashMap<String, List<CategoryDto>> expandableListDetail,ArrayList<DisplayDto> displaylist,ShopDto shopDto) {
         this.context = context;
         this.expandableListTitle = expandableListTitle;
         this.expandableListDetail = expandableListDetail;
+        this.displaylist=displaylist;
+        this.shopDto=shopDto;
     }
+
 
     @Override
     public Object getChild(int listPosition, int expandedListPosition) {
@@ -82,6 +99,8 @@ public class DisplayAdopter extends BaseExpandableListAdapter {
     public View getGroupView(int listPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
         String listTitle = (String) getGroup(listPosition);
+
+        position=listPosition;
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context.
                     getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -91,6 +110,41 @@ public class DisplayAdopter extends BaseExpandableListAdapter {
                 .findViewById(R.id.txtCategoryName);
         listTitleTextView.setTypeface(null, Typeface.BOLD);
         listTitleTextView.setText(listTitle);
+
+         capture=(ImageView) convertView.findViewById(R.id.imgtakephoto);
+         planogram=(ImageView) convertView.findViewById(R.id.imgdisplayimages);
+      //  capture=new ImageView((Activity)context);
+
+        capture.setTag(listPosition);
+        capture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+               // String displayId=(String)displaylist.get(position).display;
+             //   Toast.makeText(context,""+ v.getTag(),Toast.LENGTH_LONG).show();
+
+                FragmentChecking fragmentChecking = new FragmentChecking();
+                fragmentChecking.shopDto = shopDto;
+                fragmentChecking.display=displaylist;
+                fragmentChecking.pos=""+v.getTag();
+                new FragmentUtils((Activity) context, fragmentChecking, R.id.fragContainer);
+            }
+        });
+
+        planogram.setTag(listPosition);
+        planogram.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+             //   Toast.makeText(context,""+ v.getTag(),Toast.LENGTH_LONG).show();
+                FragmentImages fragmentImages = new FragmentImages();
+                fragmentImages.shopDto = shopDto;
+                fragmentImages.display=displaylist;
+                new FragmentUtils((Activity) context, fragmentImages, R.id.fragContainer);
+            }
+        });
+
         return convertView;
     }
 

@@ -17,6 +17,7 @@ public class FeedbackSubmitMapper implements Mapper<TableFeedbackSubmit, Feedbac
         feedbackSubmitDto.shopId=tableFeedbackSubmit.getShopid();
         feedbackSubmitDto.response=tableFeedbackSubmit.getFeedback();
         feedbackSubmitDto.date=tableFeedbackSubmit.getDate();
+        feedbackSubmitDto.visitId=tableFeedbackSubmit.getVisitid();
         return feedbackSubmitDto;
     }
 }

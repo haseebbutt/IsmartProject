@@ -24,18 +24,29 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.app.ismart.databinding.ActivitySplashBinding;
+import com.app.ismart.dto.ImeiDto;
+import com.app.ismart.realm.RealmController;
+import com.app.ismart.realm.repository.ImeiRepository;
+import com.app.ismart.realm.repository.ShopsRepository;
+import com.app.ismart.realm.specfication.GetAllData;
+import com.app.ismart.realm.tables.TableImei;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 public class SplashActivity extends AppCompatActivity {
-    ActivitySplashBinding layoutBinding;
+ //   ActivitySplashBinding layoutBinding;
 
     private static String URL1 ="";
     StringRequest request;
     private RequestQueue requestQueue;
     private static int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 0;
     String deviceId="";
+    RealmController realmController;
+    ImeiRepository imeiRepo;
+    List<ImeiDto> imeiList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +55,14 @@ public class SplashActivity extends AppCompatActivity {
 //        TelephonyManager telephonyManager = (TelephonyManager)getSystemService(this.TELEPHONY_SERVICE);
 //        String deviceId=telephonyManager.getDeviceId();
 
+        realmController = RealmController.with(this);
+        imeiRepo = new ImeiRepository(realmController.getRealm());
+
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        layoutBinding = DataBindingUtil.setContentView(this, R.layout.activity_splash);
+      //  layoutBinding = DataBindingUtil.setContentView(this, R.layout.activity_splash_new);
+        setContentView(R.layout.activity_splash_new);
 
         loadIMEI();
 
@@ -147,57 +163,75 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
 
 
-                Toast.makeText(SplashActivity.this, "" + deviceId, Toast.LENGTH_LONG).show();
+                imeiList = imeiRepo.query(new GetAllData());
 
-                URL1 = "http://173.212.235.106/api/imei/" + deviceId;
+                if (imeiList.size() != 0) {
 
-                requestQueue = Volley.newRequestQueue(getApplicationContext());
+                    if(imeiList.get(0).getImei().equals(deviceId)){
+                        Intent login = new Intent(SplashActivity.this, LoginActivity.class);
+                        startActivity(login);
+                        finish();
+                        Toast.makeText(SplashActivity.this, "Loading ...", Toast.LENGTH_LONG).show();
+                    }
 
-                request = new StringRequest(Request.Method.GET, URL1, new Response.Listener<String>() {
 
-                    @Override
-                    public void onResponse(String response) {
+                } else {
 
 
-                        try {
+                  //  Toast.makeText(SplashActivity.this, "" + deviceId, Toast.LENGTH_LONG).show();
 
-                            JSONObject jsonObject = new JSONObject(response);
-                            String message = jsonObject.getString("message");
+                    URL1 = "http://173.212.235.106/api/imei/" + deviceId;
 
-                            if (message.equals("un-authorised")) {
+                    requestQueue = Volley.newRequestQueue(getApplicationContext());
 
-                                Toast.makeText(SplashActivity.this, "App Exiting .. " + message, Toast.LENGTH_LONG).show();
+                    request = new StringRequest(Request.Method.GET, URL1, new Response.Listener<String>() {
 
-                                finish();
-                            } else {
+                        @Override
+                        public void onResponse(String response) {
 
-                                Toast.makeText(SplashActivity.this, "" + message, Toast.LENGTH_LONG).show();
-                                Intent login = new Intent(SplashActivity.this, LoginActivity.class);
-                                startActivity(login);
-                                finish();
 
+                            try {
+
+                                JSONObject jsonObject = new JSONObject(response);
+                                String message = jsonObject.getString("message");
+
+                                if (message.equals("un-authorised")) {
+
+                                    Toast.makeText(SplashActivity.this, "App Exiting .. " + message, Toast.LENGTH_LONG).show();
+
+                                    finish();
+                                } else {
+
+                                    ImeiDto imeiDto=new ImeiDto();
+                                    imeiDto.setImei(deviceId);
+                                  //  Toast.makeText(SplashActivity.this, "Dto:"+imeiDto.getImei(), Toast.LENGTH_LONG).show();
+
+                                    imeiRepo.add(imeiDto);
+                                    Toast.makeText(SplashActivity.this, "Loading ...Please Wait", Toast.LENGTH_LONG).show();
+                                    Intent login = new Intent(SplashActivity.this, LoginActivity.class);
+                                    startActivity(login);
+                                    finish();
+
+                                }
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
 
-
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
 
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(SplashActivity.this, "" + error, Toast.LENGTH_LONG).show();
+                        }
+                    });
 
-                        Toast.makeText(SplashActivity.this, "" + error, Toast.LENGTH_LONG).show();
-                    }
-                });
-
-                requestQueue.add(request);
-            }
-            //Do something after 100ms
-
+                    requestQueue.add(request);
+                }
+                //Do something after 100ms
+            } // End Else
 
         }, 5000);
     }

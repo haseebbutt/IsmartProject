@@ -16,6 +16,7 @@ public class TableBackdoorQuantity extends RealmObject {
     private  String date;
     private String timestamp;
     private String location;
+    private String visitId;
 
     public void setLocation(String location) {
         this.location = location;
@@ -35,6 +36,10 @@ public class TableBackdoorQuantity extends RealmObject {
 
     public void setShopId(String shopId) {
         this.shopId = shopId;
+    }
+
+    public void setVisitId(String visitId) {
+        this.visitId = visitId;
     }
 
     public void setItemId(String itemId) {
@@ -59,6 +64,10 @@ public class TableBackdoorQuantity extends RealmObject {
 
     public String getShopId() {
         return shopId;
+    }
+
+    public String getVisitId() {
+        return visitId;
     }
 
     public String getItemId() {

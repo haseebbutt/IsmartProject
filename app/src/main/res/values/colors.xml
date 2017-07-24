@@ -5,9 +5,10 @@
     <color name="colorAccent">#FFFFFF</color>
     <color name="blue">#465985</color>
     <color name="red">#db4338</color>
-    <color name="white">#FFFFFF</color>
+    <color name="white">#ffffff</color>
     <color name="textcolor">#8295BF</color>
     <color name="darkblue">#8295BF</color>
     <color name="navheader">#192440</color>
+    <color name="igrey">#757575</color>
 
 </resources>

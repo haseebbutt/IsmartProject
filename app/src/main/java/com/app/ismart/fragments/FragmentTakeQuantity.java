@@ -78,13 +78,14 @@ public class FragmentTakeQuantity extends Fragment implements OnEditTextChanged 
             @Override
             public void onClick(View v) {
                 for (ItemDto itemDto : item) {
-                    final List<QuantityDto> itemquantity=quantityrepository.queryforitem(new GetAllData(),date,""+shopDto.getId(),""+itemDto.getId(),itemDto.getDisplay());
+                    final List<QuantityDto> itemquantity=quantityrepository.queryforitemVisits(new GetAllData(),date,""+shopDto.getId(),""+itemDto.getId(),itemDto.getDisplay(),shopDto.getVisitId()+"");
                     // Toast.makeText(getContext(), ""+itemDto.getTitle()+"\n"+itemDto.getQuantity(), Toast.LENGTH_SHORT).show();
                     QuantityDto dto = new QuantityDto();
                     dto.quantity = itemDto.getQuantity();
                     dto.shopid = "" + shopDto.getId();
                     dto.itemid = "" + itemDto.getId();
                     dto.date = date;
+                    dto.visitid = shopDto.getVisitId()+"";
                     dto.display=itemDto.getDisplay();
                     if (itemquantity.size() >= 1) {
                         dto.id = itemquantity.get(0).id;

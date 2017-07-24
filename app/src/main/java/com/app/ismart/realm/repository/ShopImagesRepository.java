@@ -39,6 +39,8 @@ public class ShopImagesRepository implements IRepository<ShopImagesDto> {
                 newsRealm.setBeforeimage(item.beforeImage);
                 newsRealm.setAfterImage(item.afterImage);
                 newsRealm.setDate(item.date);
+                newsRealm.setVisitid(item.visitid);
+                newsRealm.setDisplayName(item.displayName);
 
 
             }
@@ -60,7 +62,8 @@ public class ShopImagesRepository implements IRepository<ShopImagesDto> {
                     newsRealm.setBeforeimage(item.beforeImage);
                     newsRealm.setAfterImage(item.afterImage);
                     newsRealm.setDate(item.date);
-
+                    newsRealm.setVisitid(item.visitid);
+                    newsRealm.setDisplayName(item.displayName);
 
                 }
             });
@@ -77,6 +80,8 @@ public class ShopImagesRepository implements IRepository<ShopImagesDto> {
         toEdit.setBeforeimage(item.beforeImage);
         toEdit.setAfterImage(item.afterImage);
         toEdit.setDate(item.date);
+        toEdit.setVisitid(item.visitid);
+        toEdit.setDisplayName(item.displayName);
         realm.commitTransaction();
     }
 
@@ -97,10 +102,10 @@ public class ShopImagesRepository implements IRepository<ShopImagesDto> {
         realmResults.clear();
         realm.commitTransaction();
     }
-    public void removespecfic(Specification specification,String date,String shopid) {
+    public void removespecfic(Specification specification,String date,String shopid,String visitid,String dispName) {
         realm.beginTransaction();
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TableShopImages> realmResults = realmSpecification.toRealmShopImagesmResults(realm,date,shopid);
+        final RealmResults<TableShopImages> realmResults = realmSpecification.toRealmShopImagesmResults(realm,date,shopid,visitid,dispName);
         realmResults.clear();
         realm.commitTransaction();
     }
@@ -133,9 +138,9 @@ public class ShopImagesRepository implements IRepository<ShopImagesDto> {
         return newses;
 
     }
-    public List<ShopImagesDto> queryForSpecficDate(Specification specification,String date,String shopid) {
+    public List<ShopImagesDto> queryForSpecficDate(Specification specification,String date,String shopid,String visitid,String dispName) {
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TableShopImages> realmResults = realmSpecification.toRealmShopImagesmResults(realm,date,shopid);
+        final RealmResults<TableShopImages> realmResults = realmSpecification.toRealmShopImagesmResults(realm,date,shopid,visitid,dispName);
 
         final List<ShopImagesDto> newses = new ArrayList<>();
         ShopIMagesMapper mapper = new ShopIMagesMapper();

@@ -10,7 +10,9 @@ import com.app.ismart.realm.tables.TableComptitorProducts;
 import com.app.ismart.realm.tables.TableComptitorQuantity;
 import com.app.ismart.realm.tables.TableExpiredItems;
 import com.app.ismart.realm.tables.TableFeedback;
+import com.app.ismart.realm.tables.TableFeedbackAnswers;
 import com.app.ismart.realm.tables.TableFeedbackSubmit;
+import com.app.ismart.realm.tables.TableImei;
 import com.app.ismart.realm.tables.TablePopSubmit;
 import com.app.ismart.realm.tables.TablePops;
 import com.app.ismart.realm.tables.TableProducts;
@@ -102,14 +104,44 @@ public class GetAllData implements RealmSpecification {
     }
 
     @Override
-    public RealmResults<TableShopImages> toRealmShopImagesmResults(Realm realm, String date, String shopid) {
+    public RealmResults<TableShopImages> toRealmShopImagesmResults(Realm realm, String date, String shopid,String visitid,String dispName) {
 
         return realm.where(TableShopImages.class)
                 .equalTo("date", date)
                 .equalTo("shopid", shopid)
+                .equalTo("visitid", visitid)
+                .equalTo("displayName", dispName)
                 .findAll();
 
 
+    }
+
+    @Override
+    public RealmResults<TableImei> toRealmImeiResults(Realm realm){
+
+        return realm.where(TableImei.class).findAll();
+
+    }
+
+    @Override
+    public RealmResults<TableShops> toRealmDateResults(Realm realm, String day) {
+        return realm.where(TableShops.class)
+                .equalTo("day", day)
+                .findAll();
+    }
+
+    @Override
+    public RealmResults<TableFeedbackAnswers> toRealmFeedbackResultsAnswers(Realm realm, String feedbackid) {
+        return realm.where(TableFeedbackAnswers.class)
+                .equalTo("feedbackid", feedbackid)
+                .findAll();
+    }
+
+    @Override
+    public RealmResults<TableShops> toRealmShopidResults(Realm realm, String shopid) {
+        return realm.where(TableShops.class)
+                .equalTo("shopId", shopid)
+                .findAll();
     }
 
     @Override
@@ -126,6 +158,36 @@ public class GetAllData implements RealmSpecification {
                 .equalTo("date", date)
                 .equalTo("shopId", shopid)
                 .equalTo("itemId", itemid)
+                .findAll();
+    }
+
+
+    @Override
+    public RealmResults<TablesQuantity> toRealmQuantitymVisits(Realm realm, String date, String shopid, String visitid) {
+        return realm.where(TablesQuantity.class)
+                .equalTo("date", date)
+                .equalTo("shopId", shopid)
+                .equalTo("visitId", visitid)
+                .findAll();
+    }
+
+
+    @Override
+    public RealmResults<TablesQuantity> toRealmQuantitymResultsQuantityVisits(Realm realm,String date,String shopid,String itemid,String display,String visitid) {
+        return realm.where(TablesQuantity.class)
+                .equalTo("date", date)
+                .equalTo("shopId", shopid)
+                .equalTo("itemId", itemid)
+                .equalTo("visitId", visitid)
+                .findAll();
+    }
+
+    @Override
+    public RealmResults<TablesQuantity> toRealmQuantitymResultsVisits(Realm realm, String date, String shopid, String visitid) {
+        return realm.where(TablesQuantity.class)
+                .equalTo("date", date)
+                .equalTo("shopId", shopid)
+                .equalTo("visitId", visitid)
                 .findAll();
     }
 
@@ -154,19 +216,21 @@ public class GetAllData implements RealmSpecification {
     }
 
     @Override
-    public RealmResults<TableComptitorQuantity> toRealmComptitorQuantitydisplaymResults(Realm realm, String date, String shopid, String display) {
+    public RealmResults<TableComptitorQuantity> toRealmComptitorQuantitydisplaymResults(Realm realm, String date, String shopid, String display,String visitid) {
         return realm.where(TableComptitorQuantity.class)
                 .equalTo("date", date)
                 .equalTo("shopId", shopid)
                 .equalTo("displayId", display)
+                .equalTo("visitId", visitid)
                 .findAll();
     }
 
     @Override
-    public RealmResults<TableShopStatus> toRealmShopstatusResults(Realm realm, String date, String shopid) {
+    public RealmResults<TableShopStatus> toRealmShopstatusResults(Realm realm, String date, String shopid,String visitid) {
         return realm.where(TableShopStatus.class)
                 .equalTo("date", date)
                 .equalTo("shopId", shopid)
+                .equalTo("visitId", visitid)
                 .findAll();
     }
 
@@ -194,18 +258,20 @@ public class GetAllData implements RealmSpecification {
     }
 
     @Override
-    public RealmResults<TableFeedbackSubmit> toRealmFeedbackSubmitResults(Realm realm, String shopid, String feedbackid) {
+    public RealmResults<TableFeedbackSubmit> toRealmFeedbackSubmitResults(Realm realm, String shopid, String feedbackid,String visitid) {
         return realm.where(TableFeedbackSubmit.class)
                 .equalTo("shopid", shopid)
                 .equalTo("feedbackid", feedbackid)
+                .equalTo("visitid", visitid)
                 .findAll();
     }
 
     @Override
-    public RealmResults<TableFeedbackSubmit> toRealmFeedbackbydateSubmitResults(Realm realm, String shopid, String date) {
+    public RealmResults<TableFeedbackSubmit> toRealmFeedbackbydateSubmitResults(Realm realm, String date, String shopid,String visitid) {
         return realm.where(TableFeedbackSubmit.class)
-                .equalTo("shopid", shopid)
                 .equalTo("date", date)
+                .equalTo("shopid", shopid)
+                .equalTo("visitid", visitid)
                 .findAll();
     }
 
@@ -226,18 +292,20 @@ public class GetAllData implements RealmSpecification {
     }
 
     @Override
-    public RealmResults<TablePopSubmit> toRealmPopSubmitResults(Realm realm, String popid, String shopid) {
+    public RealmResults<TablePopSubmit> toRealmPopSubmitResults(Realm realm, String popid, String shopid,String visitid) {
         return realm.where(TablePopSubmit.class)
                 .equalTo("popid", popid)
                 .equalTo("shopid", shopid)
+                .equalTo("visitid", visitid)
                 .findAll();
     }
 
     @Override
-    public RealmResults<TablePopSubmit> toRealmPopSubmitbydateResults(Realm realm, String date, String shopid) {
+    public RealmResults<TablePopSubmit> toRealmPopSubmitbydateResults(Realm realm, String date, String shopid,String visitid) {
         return realm.where(TablePopSubmit.class)
                 .equalTo("date", date)
                 .equalTo("shopid", shopid)
+                .equalTo("visitid", visitid)
                 .findAll();
     }
 
@@ -262,11 +330,12 @@ public class GetAllData implements RealmSpecification {
     }
 
     @Override
-    public RealmResults<TableExpiredItems> toRealmExpiredmResults(Realm realm, String date, String shopid, String itemid) {
+    public RealmResults<TableExpiredItems> toRealmExpiredmResults(Realm realm, String date, String shopid, String itemid,String visitid) {
         return realm.where(TableExpiredItems.class)
                 .equalTo("shopId", shopid)
                 .equalTo("date", date)
                 .equalTo("itemId", itemid)
+                .equalTo("visitId", visitid)
                 .findAll();
     }
 
@@ -278,47 +347,51 @@ public class GetAllData implements RealmSpecification {
     }
 
     @Override
-    public RealmResults<TableBackdoorQuantity> toRealmBackdoorQuantitymResults(Realm realm, String date, String shopid) {
+    public RealmResults<TableBackdoorQuantity> toRealmBackdoorQuantitymResults(Realm realm, String date, String shopid,String visitid) {
         return realm.where(TableBackdoorQuantity.class)
                 .equalTo("date", date)
                 .equalTo("shopId", shopid)
+                .equalTo("visitId", visitid)
                 .findAll();
     }
 
     @Override
-    public RealmResults<TableBackdoorQuantity> toRealmBackdoorQuantitymResults(Realm realm, String date, String shopid, String itemid) {
+    public RealmResults<TableBackdoorQuantity> toRealmBackdoorQuantitymResults(Realm realm, String date, String shopid, String itemid,String visitid) {
         return realm.where(TableBackdoorQuantity.class)
                 .equalTo("date", date)
                 .equalTo("shopId", shopid)
                 .equalTo("itemId", itemid)
+                .equalTo("visitId", visitid)
                 .findAll();
     }
 
     @Override
-    public RealmResults<TableBackdoorQuantity> toRealmBackdoorQuantitymResults(Realm realm, String shopid) {
+    public RealmResults<TableBackdoorQuantity> toRealmBackdoorQuantitymResults(Realm realm, String shopid,String visitid) {
         return realm.where(TableBackdoorQuantity.class)
 
                 .equalTo("shopId", shopid)
-
+                .equalTo("visitId", visitid)
                 .findAll();
     }
 
     @Override
-    public RealmResults<TableComptitorImages> toRealmComptitorImagesmResults(Realm realm, String date, String shopid,String displayid) {
+    public RealmResults<TableComptitorImages> toRealmComptitorImagesmResults(Realm realm, String date, String shopid,String displayid,String visitid) {
         return realm.where(TableComptitorImages.class)
                 .equalTo("date", date)
                 .equalTo("shopid", shopid)
                 .equalTo("displayid", displayid)
+                .equalTo("visitid", visitid)
                 .findAll();
     }
 
 
 
     @Override
-    public RealmResults<TableExpiredItems> toRealmExpiredmResults(Realm realm, String date, String shopid) {
+    public RealmResults<TableExpiredItems> toRealmExpiredmResults(Realm realm, String date, String shopid,String visitid) {
         return realm.where(TableExpiredItems.class)
                 .equalTo("shopId", shopid)
                 .equalTo("date", date)
+                .equalTo("visitId", visitid)
                 .findAll();
     }
 
@@ -331,12 +404,24 @@ public class GetAllData implements RealmSpecification {
     }
 
     @Override
-    public RealmResults<TableComptitorQuantity> toRealmComptitorQuantitymResults(Realm realm, String date, String shopid, String itemid, String display) {
+    public RealmResults<TableComptitorQuantity> toRealmComptitorQuantitydisplaymResults1(Realm realm, String date, String shopid, String visitid) {
+        return realm.where(TableComptitorQuantity.class)
+                .equalTo("date", date)
+                .equalTo("shopId", shopid)
+                .equalTo("visitId", visitid)
+                .findAll();
+    }
+
+
+    @Override
+    public RealmResults<TableComptitorQuantity> toRealmComptitorQuantitymResults(Realm realm, String date, String shopid, String itemid, String display,String visitid) {
         return realm.where(TableComptitorQuantity.class)
                 .equalTo("date", date)
                 .equalTo("shopId", shopid)
                 .equalTo("products", itemid)
                 .equalTo("display", display)
+                .equalTo("visitId", visitid)
+
                 .findAll();
     }
 
@@ -351,11 +436,20 @@ public class GetAllData implements RealmSpecification {
     }
 
     @Override
-    public RealmResults<TableVisits> toRealmVisitsResultsDate(Realm realm,int sched,int i){
+    public RealmResults<TableVisits> toRealmVisitsResults(Realm realm){
+
+        return realm.where(TableVisits.class)
+                .findAll();
+
+    }
+
+
+    @Override
+    public RealmResults<TableVisits> toRealmVisitsResultsDate(Realm realm,int sched,int visitid){
 
         return realm.where(TableVisits.class)
                 .equalTo("schedularid",sched)
-                .equalTo("completed",i)
+                .equalTo("visitid",visitid)
                 .findAll();
 
     }
@@ -365,6 +459,18 @@ public class GetAllData implements RealmSpecification {
 
         return realm.where(TableVisits.class)
                 .equalTo("schedularid",sched)
+                .equalTo("completed",0)
+                .findAll();
+
+    }
+
+    @Override
+    public RealmResults<TableVisits> toRealmVisitsQueryTwo(Realm realm,int sched){
+
+        return realm.where(TableVisits.class)
+                .equalTo("schedularid",sched)
+                .equalTo("visitid",1)
+                .equalTo("completed",1)
                 .findAll();
 
     }

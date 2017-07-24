@@ -11,4 +11,5 @@ public class CompetotorImagesDto {
     public  String afterImage;
     public String date;
     public String displayid;
+    public String visitid;
 }

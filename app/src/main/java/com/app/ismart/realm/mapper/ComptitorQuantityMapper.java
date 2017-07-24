@@ -21,6 +21,7 @@ public class ComptitorQuantityMapper  implements Mapper<TableComptitorQuantity, 
         quantityDto.quantities=tableComptitorQuantity.getQuantities();
         quantityDto.id=tableComptitorQuantity.getId();
         quantityDto.display=tableComptitorQuantity.getDisplay();
+        quantityDto.visitId=tableComptitorQuantity.getVisitId();
         return quantityDto;
     }
 }

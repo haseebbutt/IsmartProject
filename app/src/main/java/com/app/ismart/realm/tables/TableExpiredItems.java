@@ -17,6 +17,7 @@ public class TableExpiredItems extends RealmObject {
     private String location;
     private String nearexpired;
     private String date;
+    private String visitId;
 
     public void setDate(String date) {
         this.date = date;
@@ -36,6 +37,10 @@ public class TableExpiredItems extends RealmObject {
 
     public void setShopId(String shopId) {
         this.shopId = shopId;
+    }
+
+    public void setVisitId(String visitId) {
+        this.visitId = visitId;
     }
 
     public void setItemId(String itemId) {
@@ -64,6 +69,10 @@ public class TableExpiredItems extends RealmObject {
 
     public String getShopId() {
         return shopId;
+    }
+
+    public String getVisitId() {
+        return visitId;
     }
 
     public String getItemId() {

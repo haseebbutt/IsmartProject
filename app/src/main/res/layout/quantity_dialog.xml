@@ -3,14 +3,14 @@
     android:id="@+id/layout_root"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/colorPrimary"
+    android:background="@color/igrey"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/reason1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDark"
+        android:background="@drawable/btn"
         android:padding="10dp"
         android:text="Enter product quantity : "
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -22,17 +22,17 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/textView1"
+        android:layout_below="@+id/reason1"
         android:layout_margin="5dp"
         android:layout_marginTop="5dp"
-        android:textColorHint="@android:color/white"
-
         android:background="@android:color/transparent"
 
         android:hint="Quantity"
+
         android:inputType="number"
         android:padding="10dp"
-        android:textColor="@android:color/black">
+        android:textColor="@android:color/black"
+        android:textColorHint="@android:color/white">
 
         <requestFocus />
 
@@ -61,9 +61,8 @@
         android:layout_marginRight="20dp"
         android:layout_toLeftOf="@+id/btnSubmit"
         android:layout_toStartOf="@+id/btnSubmit"
-        android:background="@color/colorPrimaryDark"
-        android:textColor="@android:color/white"
+        android:background="@color/red"
         android:text="Cancel"
-         />
+        android:textColor="@android:color/white" />
 
 </RelativeLayout>

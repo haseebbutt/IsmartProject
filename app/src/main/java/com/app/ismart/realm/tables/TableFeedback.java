@@ -1,6 +1,7 @@
 package com.app.ismart.realm.tables;
 
 import io.realm.RealmObject;
+import io.realm.annotations.Index;
 import io.realm.annotations.PrimaryKey;
 
 /**
@@ -18,7 +19,6 @@ public class TableFeedback extends RealmObject {
     private String categoryid;
 
     private String category;
-
 
 
     public int getId() {
@@ -40,6 +40,7 @@ public class TableFeedback extends RealmObject {
     public String getCategory() {
         return category;
     }
+
 
 
 

@@ -12,4 +12,5 @@ public class PopSubmitDto {
     public String date;
     public String timestamp;
     public String location;
+    public  String visitid;
 }

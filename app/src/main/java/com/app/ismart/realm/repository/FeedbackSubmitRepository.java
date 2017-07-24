@@ -40,6 +40,7 @@ public class FeedbackSubmitRepository implements IRepository<FeedbackSubmitDto> 
                 newsRealm.setShopid(""+item.shopId);
                 newsRealm.setLocation(item.location);
                 newsRealm.setDate(item.date);
+                newsRealm.setVisitid(item.visitId);
 
             }
         });
@@ -60,13 +61,14 @@ public class FeedbackSubmitRepository implements IRepository<FeedbackSubmitDto> 
     public void update(FeedbackSubmitDto item) {
 
         TableFeedbackSubmit toEdit = realm.where(TableFeedbackSubmit.class)
-                .equalTo("feedbackid", item.feedbackId) .equalTo("shopid", item.shopId).findFirst();
+                .equalTo("feedbackid", item.feedbackId) .equalTo("shopid", item.shopId).equalTo("visitid", item.visitId).findFirst();
         realm.beginTransaction();
         toEdit.setFeedback(""+item.response);
         toEdit.setFeedbackid(item.feedbackId);
         toEdit.setShopid(""+item.shopId);
         toEdit.setLocation(item.location);
         toEdit.setDate(item.date);
+        toEdit.setVisitid(item.visitId);
         realm.commitTransaction();
     }
 
@@ -101,10 +103,10 @@ public class FeedbackSubmitRepository implements IRepository<FeedbackSubmitDto> 
         realm.commitTransaction();
     }
 
-    public void removespecfic(Specification specification, String shopid,String feedbackid) {
+    public void removespecfic(Specification specification, String shopid,String feedbackid,String visitid) {
         realm.beginTransaction();
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TableFeedbackSubmit> realmResults = realmSpecification.toRealmFeedbackSubmitResults(realm, shopid,feedbackid);
+        final RealmResults<TableFeedbackSubmit> realmResults = realmSpecification.toRealmFeedbackSubmitResults(realm, shopid,feedbackid,visitid);
         realmResults.clear();
         realm.commitTransaction();
     }
@@ -126,9 +128,9 @@ public class FeedbackSubmitRepository implements IRepository<FeedbackSubmitDto> 
 
     }
 
-    public List<FeedbackSubmitDto> queryforfeedback(Specification specification, String shopid,String feedbackid) {
+    public List<FeedbackSubmitDto> queryforfeedback(Specification specification, String shopid,String feedbackid, String visitid) {
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TableFeedbackSubmit> realmResults = realmSpecification.toRealmFeedbackSubmitResults(realm, shopid,feedbackid);
+        final RealmResults<TableFeedbackSubmit> realmResults = realmSpecification.toRealmFeedbackSubmitResults(realm, shopid,feedbackid,visitid);
 
         final List<FeedbackSubmitDto> newses = new ArrayList<>();
         FeedbackSubmitMapper mapper = new FeedbackSubmitMapper();
@@ -141,9 +143,9 @@ public class FeedbackSubmitRepository implements IRepository<FeedbackSubmitDto> 
         return newses;
 
     }
-    public List<FeedbackSubmitDto> queryforfeedbackbydate(Specification specification,String date, String shopid) {
+    public List<FeedbackSubmitDto> queryforfeedbackbydate(Specification specification,String date, String shopid,String visitid) {
         final RealmSpecification realmSpecification = (RealmSpecification) specification;
-        final RealmResults<TableFeedbackSubmit> realmResults = realmSpecification.toRealmFeedbackbydateSubmitResults(realm,shopid, date);
+        final RealmResults<TableFeedbackSubmit> realmResults = realmSpecification.toRealmFeedbackbydateSubmitResults(realm,date, shopid,visitid);
 
         final List<FeedbackSubmitDto> newses = new ArrayList<>();
         FeedbackSubmitMapper mapper = new FeedbackSubmitMapper();

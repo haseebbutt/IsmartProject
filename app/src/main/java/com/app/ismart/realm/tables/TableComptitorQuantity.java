@@ -18,6 +18,7 @@ public class TableComptitorQuantity extends RealmObject {
     private String location;
     private String displayId;
     private String display;
+    private String visitId;
 
     public String getDisplay() {
         return display;
@@ -59,6 +60,10 @@ public class TableComptitorQuantity extends RealmObject {
         this.shopId = shopId;
     }
 
+    public void setVisitId(String visitId) {
+        this.visitId = visitId;
+    }
+
     public void setProducts(String products) {
         this.products = products;
     }
@@ -78,6 +83,10 @@ public class TableComptitorQuantity extends RealmObject {
 
     public String getShopId() {
         return shopId;
+    }
+
+    public String getVisitId() {
+        return visitId;
     }
 
     public String getProducts() {

@@ -18,6 +18,7 @@ public class QuantityMapper  implements Mapper<TablesQuantity, QuantityDto> {
         dto.shopid=tablesQuantity.getShopId();
         dto.date=tablesQuantity.getDate();
         dto.display=tablesQuantity.getdisplay();
+        dto.visitid=tablesQuantity.getVisitId();
         return dto;
     }
 }

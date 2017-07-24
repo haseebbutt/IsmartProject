@@ -14,6 +14,8 @@ public class TableShopImages extends RealmObject {
     private  String afterImage;
     private  String shopid;
     private  String date;
+    private String visitid;
+    private String displayName;
 
     public void setId(int id) {
         this.id = id;
@@ -29,6 +31,14 @@ public class TableShopImages extends RealmObject {
 
     public void setShopid(String shopid) {
         this.shopid = shopid;
+    }
+
+    public void setVisitid(String visitid) {
+        this.visitid = visitid;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
     public void setDate(String date) {
@@ -50,6 +60,14 @@ public class TableShopImages extends RealmObject {
 
     public String getShopid() {
         return shopid;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public String getVisitid() {
+        return visitid;
     }
 
     public String getDate() {

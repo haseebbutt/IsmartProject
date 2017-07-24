@@ -19,6 +19,8 @@ public class TableFeedbackSubmit extends RealmObject {
     private String shopid;
 
     private String location;
+
+    private String visitid;
 private String date;
 
     public String getDate() {
@@ -45,6 +47,10 @@ private String date;
         this.shopid = shopid;
     }
 
+    public void setVisitid(String visitid) {
+        this.visitid = visitid;
+    }
+
     public void setLocation(String location) {
         this.location = location;
     }
@@ -63,6 +69,10 @@ private String date;
 
     public String getShopid() {
         return shopid;
+    }
+
+    public String getVisitid() {
+        return visitid;
     }
 
     public String getLocation() {

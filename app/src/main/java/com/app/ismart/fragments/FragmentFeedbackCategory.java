@@ -121,7 +121,7 @@ public class FragmentFeedbackCategory extends Fragment {
         List<FeedbackSubmitDto> feedbacks=quantityrepository.query(new GetAllData());
         for (FeedBackDto itemDto : list) {
             if (itemDto.getCategory().equalsIgnoreCase(category)) {
-                final List<FeedbackSubmitDto> itemquantity =quantityrepository .queryforfeedback(new GetAllData(), shopDto.getId()+"", "" + itemDto.getFeedbackid());
+                final List<FeedbackSubmitDto> itemquantity =quantityrepository .queryforfeedback(new GetAllData(), shopDto.getId()+"", "" + itemDto.getFeedbackid(),""+shopDto.getVisitId());
                 if (itemquantity.size() >= 1) {
                     itemDto.setAnswers(itemquantity.get(0).response);
                 }
