@@ -239,6 +239,8 @@ public class FragmentShopOptions extends Fragment implements IonUpdateMark {
         return layoutBinding.getRoot();
     }
 
+
+
     public void setAdopter() {
         List<ShopOptionDto> options = shopStatusRepository.query(new GetAllData());
 

@@ -12,6 +12,7 @@ import com.app.ismart.databinding.TakequantityItemBinding;
 import com.app.ismart.dto.ItemDto;
 import com.app.ismart.interfaces.OnEditTextChanged;
 import com.app.ismart.rcvbase.BaseRecyclerViewAdapter;
+import com.app.ismart.realm.repository.QuanityRepository;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,6 +24,7 @@ import java.util.List;
 
 public class TakeQuantityAdopter extends BaseRecyclerViewAdapter<ItemDto, TakequantityItemBinding> {
     private OnEditTextChanged onEditTextChanged;
+
     public TakeQuantityAdopter(List<ItemDto> data, @NotNull Context context, OnEditTextChanged onEditTextChanged) {
         super(data, context);
         this.onEditTextChanged=onEditTextChanged;
@@ -35,8 +37,13 @@ public class TakeQuantityAdopter extends BaseRecyclerViewAdapter<ItemDto, Takequ
 
     @Override
     protected void onBindViewHolderDynamic(ItemDto item, ViewHolder viewHolder, final int position) {
+
         viewHolder.binding.txtname.setText(item.getTitle());
         viewHolder.binding.edtquantity.setText(item.getQuantity());
+
+
+
+
         viewHolder.binding.edtquantity.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}

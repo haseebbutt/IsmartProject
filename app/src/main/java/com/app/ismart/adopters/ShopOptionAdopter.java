@@ -79,7 +79,14 @@ public class ShopOptionAdopter extends BaseRecyclerViewAdapter<ShopOptionDto, Sh
             new FragmentUtils((Activity) context, fargment, R.id.fragContainer);
         }
         else  if(model.getName().equalsIgnoreCase("Stocktake")){
-         shoptype(shopDto);
+        // shoptype(shopDto);
+            String location= ((MainActivity) context).checklocation();
+            FragmentBackdoorCategories fargment = new FragmentBackdoorCategories();
+            fargment.shopDto = shopDto;
+            fargment.location=location;
+            fargment.ionUpdateMark=ionUpdateMark;
+            new FragmentUtils((Activity) context, fargment, R.id.fragContainer);
+            ((MainActivity) context).enableshoplist(false);
         }
 
     }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.app.ismart.R;
 import com.app.ismart.databinding.CategoryItemBinding;
@@ -14,6 +15,7 @@ import com.app.ismart.dto.ShopDto;
 import com.app.ismart.fragments.FragmentBackdoorQuantity;
 import com.app.ismart.rcvbase.BaseRecyclerViewAdapter;
 import com.app.ismart.rcvbase.IOnItemClickListner;
+import com.app.ismart.realm.repository.QuanityRepository;
 import com.app.ismart.utils.FragmentUtils;
 
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +31,7 @@ import java.util.List;
 public class BackdoorCategoryAdopter extends BaseRecyclerViewAdapter<CategoryDto, CategoryItemBinding> implements IOnItemClickListner<CategoryDto> {
     HashMap<String, List<ItemDto>> expandableListDetail = new HashMap<String, List<ItemDto>>();
     ShopDto shopDto;
+   QuanityRepository quantityRepository;
 
     public BackdoorCategoryAdopter(List<CategoryDto> data, @NotNull Context context, HashMap<String, List<ItemDto>> expandableListDetail, ShopDto shopDto) {
         super(data, context);
@@ -38,8 +41,14 @@ public class BackdoorCategoryAdopter extends BaseRecyclerViewAdapter<CategoryDto
 
     @Override
     public void onRecyclerItemClick(CategoryDto model, View view, int position) {
+
+
+       // List<ItemDto> itemfront = quantityRepository
+
         List<ItemDto> item = expandableListDetail.get(model.getName());
         FragmentBackdoorQuantity fragment = new FragmentBackdoorQuantity();
+
+        Toast.makeText((Activity)context,""+item.get(0).getQuantity(),Toast.LENGTH_LONG).show();
         fragment.item = item;
         fragment.shopDto=shopDto;
         new FragmentUtils((Activity) context, fragment, R.id.fragContainer);

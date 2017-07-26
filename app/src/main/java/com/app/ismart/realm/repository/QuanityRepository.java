@@ -220,5 +220,22 @@ public class QuanityRepository implements IRepository<QuantityDto> {
 
     }
 
+
+    public List<QuantityDto> queryforItemValues(Specification specification,String itemid,String shopid,String visitid) {
+        final RealmSpecification realmSpecification = (RealmSpecification) specification;
+        final RealmResults<TablesQuantity> realmResults = realmSpecification.toRealmQuantityValueResults(realm,itemid,shopid,visitid);
+
+        final List<QuantityDto> newses = new ArrayList<>();
+        QuantityMapper mapper = new QuantityMapper();
+        for (TablesQuantity item : realmResults) {
+            QuantityDto dto = mapper.map(item);
+            newses.add(dto);
+        }
+
+
+        return newses;
+
+    }
+
    // toRealmQuantitymResultsVisits(Realm realm, String date, String shopid, String visitid)
 }

@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.app.ismart.MainActivity;
 import com.app.ismart.R;
+import com.app.ismart.adopters.TakeBackQuantityAdopter;
 import com.app.ismart.adopters.TakeQuantityAdopter;
 import com.app.ismart.databinding.FragmentBackdoorquantityBinding;
 import com.app.ismart.dto.ItemDto;
@@ -59,7 +60,7 @@ public class FragmentBackdoorQuantity extends Fragment implements OnEditTextChan
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Categories");
         layoutBinding.toolbar.setTitleTextColor(Color.WHITE);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        TakeQuantityAdopter adapter = new TakeQuantityAdopter(item, getContext(), this);
+        TakeBackQuantityAdopter adapter = new TakeBackQuantityAdopter(item, getContext(), this,shopDto);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         realmController = RealmController.with(this);

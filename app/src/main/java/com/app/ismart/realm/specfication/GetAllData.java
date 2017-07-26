@@ -124,6 +124,15 @@ public class GetAllData implements RealmSpecification {
     }
 
     @Override
+    public RealmResults<TablesQuantity> toRealmQuantityValueResults(Realm realm, String itemid, String shopid, String visitid) {
+        return realm.where(TablesQuantity.class)
+                .equalTo("itemId", itemid)
+                .equalTo("shopId", shopid)
+                .equalTo("visitId", visitid)
+                .findAll();
+    }
+
+    @Override
     public RealmResults<TableShops> toRealmDateResults(Realm realm, String day) {
         return realm.where(TableShops.class)
                 .equalTo("day", day)

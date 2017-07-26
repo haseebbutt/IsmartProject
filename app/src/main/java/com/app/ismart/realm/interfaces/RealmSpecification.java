@@ -47,6 +47,7 @@ public interface RealmSpecification extends Specification {
     RealmResults<TableShopImages> toRealmShopImagesmResults(Realm realm, String date,String shopid,String visitid,String dispName);
     RealmResults<TableShops>  toRealmShopidResults(Realm realm,String shopid);
     RealmResults<TableImei> toRealmImeiResults(Realm realm);
+    RealmResults<TablesQuantity> toRealmQuantityValueResults(Realm realm,String itemid,String shopid,String visitid);
     RealmResults<TableShops> toRealmDateResults(Realm realm,String date);
     RealmResults<TableFeedbackAnswers> toRealmFeedbackResultsAnswers(Realm realm, String feedbackid);
     RealmResults<TablesQuantity> toRealmQuantitymResults(Realm realm, String date,String shopid);

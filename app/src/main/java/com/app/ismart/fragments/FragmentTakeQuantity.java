@@ -87,6 +87,8 @@ public class FragmentTakeQuantity extends Fragment implements OnEditTextChanged 
                     dto.date = date;
                     dto.visitid = shopDto.getVisitId()+"";
                     dto.display=itemDto.getDisplay();
+
+                    Toast.makeText(getContext(), ""+itemDto.getDisplay(), Toast.LENGTH_SHORT).show();
                     if (itemquantity.size() >= 1) {
                         dto.id = itemquantity.get(0).id;
                         quantityrepository.update(dto);
