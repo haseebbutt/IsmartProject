@@ -41,6 +41,7 @@
             android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
             android:divider="@android:color/white"
             android:dividerHeight="1dp"
+            android:descendantFocusability="afterDescendants"
             android:layout_above="@+id/btnSave" />
         <Button
             android:id="@+id/btnSave"

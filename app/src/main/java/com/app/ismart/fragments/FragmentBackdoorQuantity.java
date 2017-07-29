@@ -18,12 +18,14 @@ import android.widget.Toast;
 import com.app.ismart.MainActivity;
 import com.app.ismart.R;
 import com.app.ismart.adopters.TakeBackQuantityAdopter;
+import com.app.ismart.adopters.TakeBackQuantityAdpt;
 import com.app.ismart.adopters.TakeQuantityAdopter;
 import com.app.ismart.databinding.FragmentBackdoorquantityBinding;
 import com.app.ismart.dto.ItemDto;
 import com.app.ismart.dto.QuantityDto;
 import com.app.ismart.dto.ShopDto;
 import com.app.ismart.interfaces.OnEditTextChanged;
+import com.app.ismart.interfaces.OnEditTextChangedNew;
 import com.app.ismart.rcvbase.RecyclerViewUtils;
 import com.app.ismart.realm.RealmController;
 import com.app.ismart.realm.repository.BackdoorQuantityRepository;
@@ -42,9 +44,10 @@ import java.util.List;
  */
 
 
-public class FragmentBackdoorQuantity extends Fragment implements OnEditTextChanged {
+public class FragmentBackdoorQuantity extends Fragment implements OnEditTextChangedNew {
     FragmentBackdoorquantityBinding layoutBinding;
     public List<ItemDto> item;
+    String [] item2;
     String date;
     public ShopDto shopDto;
     private RealmController realmController;
@@ -60,7 +63,14 @@ public class FragmentBackdoorQuantity extends Fragment implements OnEditTextChan
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Categories");
         layoutBinding.toolbar.setTitleTextColor(Color.WHITE);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        TakeBackQuantityAdopter adapter = new TakeBackQuantityAdopter(item, getContext(), this,shopDto);
+     //   TakeBackQuantityAdopter adapter = new TakeBackQuantityAdopter(item, getContext(), this,shopDto);
+        int SIZE=item.size();
+
+        //  Toast.makeText(getActivity(),""+SIZE,Toast.LENGTH_LONG).show();
+        item2=new String[SIZE];
+
+        TakeBackQuantityAdpt adapter=new TakeBackQuantityAdpt(item,item2,getContext(),shopDto,this);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         realmController = RealmController.with(this);
@@ -114,7 +124,7 @@ public class FragmentBackdoorQuantity extends Fragment implements OnEditTextChan
     }
 
     @Override
-    public void onTextChanged(int position, String charSeq) {
+    public void onTextChanged1(int position, String charSeq) {
         item.get(position).setQuantity(charSeq);
     }
 

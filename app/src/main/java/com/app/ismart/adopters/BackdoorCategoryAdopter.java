@@ -48,7 +48,7 @@ public class BackdoorCategoryAdopter extends BaseRecyclerViewAdapter<CategoryDto
         List<ItemDto> item = expandableListDetail.get(model.getName());
         FragmentBackdoorQuantity fragment = new FragmentBackdoorQuantity();
 
-        Toast.makeText((Activity)context,""+item.get(0).getQuantity(),Toast.LENGTH_LONG).show();
+      //  Toast.makeText((Activity)context,""+item.get(0).getQuantity(),Toast.LENGTH_LONG).show();
         fragment.item = item;
         fragment.shopDto=shopDto;
         new FragmentUtils((Activity) context, fragment, R.id.fragContainer);

@@ -1,5 +1,6 @@
 package com.app.ismart.fragments;
 
+import android.app.Activity;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
@@ -17,11 +18,13 @@ import android.widget.Toast;
 
 import com.app.ismart.R;
 import com.app.ismart.adopters.TakeQuantityAdopter;
+import com.app.ismart.adopters.TakeQuantityAdpt;
 import com.app.ismart.databinding.FragmenttakequantityBinding;
 import com.app.ismart.dto.ItemDto;
 import com.app.ismart.dto.QuantityDto;
 import com.app.ismart.dto.ShopDto;
 import com.app.ismart.interfaces.OnEditTextChanged;
+import com.app.ismart.interfaces.OnEditTextChangedNew;
 import com.app.ismart.rcvbase.RecyclerViewUtils;
 import com.app.ismart.realm.RealmController;
 import com.app.ismart.realm.repository.ProductRepository;
@@ -37,13 +40,15 @@ import java.util.List;
  * Created by Faheem-Abbas on 5/22/2017.
  */
 
-public class FragmentTakeQuantity extends Fragment implements OnEditTextChanged {
+public class FragmentTakeQuantity extends Fragment implements OnEditTextChangedNew{
     FragmenttakequantityBinding layoutBinding;
     public List<ItemDto> item;
+    String [] item2;
     String date;
     public ShopDto shopDto;
     private RealmController realmController;
     ProductRepository repository;
+
     QuanityRepository quantityrepository;
 
     @Nullable
@@ -55,7 +60,30 @@ public class FragmentTakeQuantity extends Fragment implements OnEditTextChanged 
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Categories");
         layoutBinding.toolbar.setTitleTextColor(Color.WHITE);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        TakeQuantityAdopter adapter = new TakeQuantityAdopter(item, getContext(), this);
+       // TakeQuantityAdopter adapter = new TakeQuantityAdopter(item, getContext(), this);
+
+   /*     item2[0]="this";
+        item2[1]="is";
+        item2[2]="great";
+        item2[4]="tutorial";
+        item2[5]="for";
+        item2[6]="recycle";
+        item2[7]="adapter";
+        item2[8]="adapter4";
+        item2[9]="adapter5";
+        item2[10]="adapter6";
+        item2[11]="adapter7";
+        item2[12]="adapter8";
+        item2[13]="adapter9";
+
+        */
+
+        int SIZE=item.size();
+
+      //  Toast.makeText(getActivity(),""+SIZE,Toast.LENGTH_LONG).show();
+        item2=new String[SIZE];
+
+        TakeQuantityAdpt adpt=new TakeQuantityAdpt(item,item2,this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         realmController = RealmController.with(this);
@@ -64,7 +92,7 @@ public class FragmentTakeQuantity extends Fragment implements OnEditTextChanged 
         date = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
         layoutBinding.rcvitems.setLayoutManager(RecyclerViewUtils.getGridLayoutManager(getContext(), 1));
         layoutBinding.rcvitems.setItemAnimator(new DefaultItemAnimator());
-        layoutBinding.rcvitems.setAdapter(adapter);
+        layoutBinding.rcvitems.setAdapter(adpt);
         Paint paint = new Paint();
         paint.setStrokeWidth(5);
         paint.setColor(Color.WHITE);
@@ -72,14 +100,16 @@ public class FragmentTakeQuantity extends Fragment implements OnEditTextChanged 
         paint.setPathEffect(new DashPathEffect(new float[]{25.0f, 25.0f}, 0));
         layoutBinding.rcvitems.addItemDecoration(
                 new HorizontalDividerItemDecoration.Builder(getContext()).paint(paint).build());
-        adapter.notifyDataSetChanged();
+        adpt.notifyDataSetChanged();
 
         layoutBinding.btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 for (ItemDto itemDto : item) {
-                    final List<QuantityDto> itemquantity=quantityrepository.queryforitemVisits(new GetAllData(),date,""+shopDto.getId(),""+itemDto.getId(),itemDto.getDisplay(),shopDto.getVisitId()+"");
-                    // Toast.makeText(getContext(), ""+itemDto.getTitle()+"\n"+itemDto.getQuantity(), Toast.LENGTH_SHORT).show();
+
+                       final List<QuantityDto> itemquantity = quantityrepository.queryforitemVisits(new GetAllData(), date, "" + shopDto.getId(), "" + itemDto.getId(), itemDto.getDisplay(), shopDto.getVisitId() + "");
+                        // Toast.makeText(getContext(), ""+itemDto.getTitle()+"\n"+itemDto.getQuantity(), Toast.LENGTH_SHORT).show();
+
                     QuantityDto dto = new QuantityDto();
                     dto.quantity = itemDto.getQuantity();
                     dto.shopid = "" + shopDto.getId();
@@ -88,7 +118,7 @@ public class FragmentTakeQuantity extends Fragment implements OnEditTextChanged 
                     dto.visitid = shopDto.getVisitId()+"";
                     dto.display=itemDto.getDisplay();
 
-                    Toast.makeText(getContext(), ""+itemDto.getDisplay(), Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(getContext(), ""+itemDto.getDisplay(), Toast.LENGTH_SHORT).show();
                     if (itemquantity.size() >= 1) {
                         dto.id = itemquantity.get(0).id;
                         quantityrepository.update(dto);
@@ -107,7 +137,8 @@ public class FragmentTakeQuantity extends Fragment implements OnEditTextChanged 
     }
 
     @Override
-    public void onTextChanged(int position, String charSeq) {
+    public void onTextChanged1(int position, String charSeq) {
+
         item.get(position).setQuantity(charSeq);
     }
 }

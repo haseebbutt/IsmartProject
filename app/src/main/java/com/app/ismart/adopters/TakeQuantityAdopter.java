@@ -38,9 +38,9 @@ public class TakeQuantityAdopter extends BaseRecyclerViewAdapter<ItemDto, Takequ
     @Override
     protected void onBindViewHolderDynamic(ItemDto item, ViewHolder viewHolder, final int position) {
 
+
         viewHolder.binding.txtname.setText(item.getTitle());
         viewHolder.binding.edtquantity.setText(item.getQuantity());
-
 
 
 
