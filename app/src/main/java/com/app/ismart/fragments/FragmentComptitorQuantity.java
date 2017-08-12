@@ -18,11 +18,14 @@ import android.widget.Toast;
 import com.app.ismart.MainActivity;
 import com.app.ismart.R;
 import com.app.ismart.adopters.ComptitorQuantityAdopter;
+import com.app.ismart.adopters.ComptitorQuantityAdpt;
+import com.app.ismart.adopters.TakeQuantityAdpt;
 import com.app.ismart.databinding.FragmentcomptitorquantityBinding;
 import com.app.ismart.dto.CompetitorProductsDto;
 import com.app.ismart.dto.CompetitorQuantityDto;
 import com.app.ismart.dto.ShopDto;
 import com.app.ismart.interfaces.OnEditTextChanged;
+import com.app.ismart.interfaces.OnEditTextChangedNew;
 import com.app.ismart.rcvbase.RecyclerViewUtils;
 import com.app.ismart.realm.RealmController;
 import com.app.ismart.realm.repository.ComptitorProductRepository;
@@ -40,10 +43,11 @@ import java.util.List;
  * Created by Faheem-Abbas on 6/9/2017.
  */
 
-public class FragmentComptitorQuantity extends Fragment implements OnEditTextChanged {
+public class FragmentComptitorQuantity extends Fragment implements OnEditTextChangedNew {
     FragmentcomptitorquantityBinding layoutBinding;
     public List<CompetitorProductsDto> item;
     String date;
+    String [] item2;
     public ShopDto shopDto;
     private RealmController realmController;
     ComptitorProductRepository repository;
@@ -58,7 +62,15 @@ public class FragmentComptitorQuantity extends Fragment implements OnEditTextCha
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Categories");
         layoutBinding.toolbar.setTitleTextColor(Color.WHITE);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        ComptitorQuantityAdopter adapter = new ComptitorQuantityAdopter(item, getContext(), this);
+     //   ComptitorQuantityAdopter adapter = new ComptitorQuantityAdopter(item, getContext(), this);
+
+        int SIZE=item.size();
+
+        //  Toast.makeText(getActivity(),""+SIZE,Toast.LENGTH_LONG).show();
+        item2=new String[SIZE];
+
+        ComptitorQuantityAdpt adapter=new ComptitorQuantityAdpt(item,item2,this);
+
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         realmController = RealmController.with(this);
@@ -83,25 +95,31 @@ public class FragmentComptitorQuantity extends Fragment implements OnEditTextCha
                 String location = ((MainActivity) getActivity()).checklocation();
                 if (location != null) {
                     for (CompetitorProductsDto itemDto : item) {
-                        final List<CompetitorQuantityDto> itemquantity = quantityrepository.queryforitem(new GetAllData(), date, "" + shopDto.getId(), "" + itemDto.getId(),itemDto.getDisplay(),shopDto.getVisitId()+"");
-                        // Toast.makeText(getContext(), ""+itemDto.getTitle()+"\n"+itemDto.getQuantity(), Toast.LENGTH_SHORT).show();
-                        CompetitorQuantityDto dto = new CompetitorQuantityDto();
-                        dto.quantities = itemDto.getQuantity();
-                        dto.shopId = "" + shopDto.getId();
-                        dto.products = "" + itemDto.getId();
-                        dto.date = date;
-                        dto.location = location;
-                        dto.displayId = itemDto.getDisplayId() + "";
-                        dto.display=itemDto.getDisplay();
-                        dto.timestamp = getDateTime();
-                        dto.visitId=shopDto.getVisitId()+"";
-                        if (itemquantity.size() >= 1) {
-                            dto.id = itemquantity.get(0).id;
-                            quantityrepository.update(dto);
-                            //  Toast.makeText(getContext(), "Quantity Updated", Toast.LENGTH_SHORT).show();
-                        } else {
-                            quantityrepository.add(dto);
-                            //  Toast.makeText(getContext(), "Quantity Added", Toast.LENGTH_SHORT).show();
+
+                        try {
+                            final List<CompetitorQuantityDto> itemquantity = quantityrepository.queryforitem(new GetAllData(), date, "" + shopDto.getId(), "" + itemDto.getId(), itemDto.getDisplay(), shopDto.getVisitId() + "");
+                            // Toast.makeText(getContext(), ""+itemDto.getTitle()+"\n"+itemDto.getQuantity(), Toast.LENGTH_SHORT).show();
+                            CompetitorQuantityDto dto = new CompetitorQuantityDto();
+                            dto.quantities = itemDto.getQuantity();
+                            dto.shopId = "" + shopDto.getId();
+                            dto.products = "" + itemDto.getId();
+                            dto.date = date;
+                            dto.location = location;
+                            dto.displayId = itemDto.getDisplayId() + "";
+                            dto.display = itemDto.getDisplay();
+                            dto.timestamp = getDateTime();
+                            dto.visitId = shopDto.getVisitId() + "";
+                            if (itemquantity.size() >= 1) {
+                                dto.id = itemquantity.get(0).id;
+                                quantityrepository.update(dto);
+                                //  Toast.makeText(getContext(), "Quantity Updated", Toast.LENGTH_SHORT).show();
+                            } else {
+                                quantityrepository.add(dto);
+                                //  Toast.makeText(getContext(), "Quantity Added", Toast.LENGTH_SHORT).show();
+                            }
+                        }catch (Exception e){
+
+
                         }
 
                     }
@@ -114,7 +132,7 @@ public class FragmentComptitorQuantity extends Fragment implements OnEditTextCha
     }
 
     @Override
-    public void onTextChanged(int position, String charSeq) {
+    public void onTextChanged1(int position, String charSeq) {
         item.get(position).setQuantity(charSeq);
     }
 

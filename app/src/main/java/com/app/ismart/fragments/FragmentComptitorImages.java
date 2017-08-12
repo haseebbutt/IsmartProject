@@ -217,16 +217,22 @@ public class FragmentComptitorImages extends Fragment implements View.OnClickLis
                             dto.afterImage = afterImage;
                             dto.date = date;
                             dto.displayid = displayid;
-                            List<CompetotorImagesDto> shopimages = comptitorImagesRepository.queryForSpecficDate(new GetAllData(), date, "" + shopDto.getId(), displayid,""+shopDto.getVisitId());
-                            if (shopimages.size() >= 1) {
-                                dto.id = shopimages.get(0).id;
-                                comptitorImagesRepository.update(dto);
-                            } else {
 
-                                comptitorImagesRepository.add(dto);
+                            try {
+                                List<CompetotorImagesDto> shopimages = comptitorImagesRepository.queryForSpecficDate(new GetAllData(), date, "" + shopDto.getId(), displayid, "" + shopDto.getVisitId());
+                                if (shopimages.size() >= 1) {
+                                    dto.id = shopimages.get(0).id;
+                                    comptitorImagesRepository.update(dto);
+                                } else {
+
+                                    comptitorImagesRepository.add(dto);
+                                }
+                                Toast.makeText(context, "Photos saved", Toast.LENGTH_SHORT).show();
+                                getActivity().getSupportFragmentManager().popBackStack();
+                            }catch (Exception e){
+
+
                             }
-                            Toast.makeText(context, "Photos saved", Toast.LENGTH_SHORT).show();
-                            getActivity().getSupportFragmentManager().popBackStack();
                         }
                     });
 

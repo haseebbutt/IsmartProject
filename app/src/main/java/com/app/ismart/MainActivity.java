@@ -137,6 +137,7 @@ public class MainActivity extends AppCompatActivity
     ArrayList<String> resultsnew = new ArrayList<String>();
     ArrayList<Integer> visitsResults=new ArrayList<Integer>();
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    int h=0;
 
     int quantityUploaded = 0;
     int statusUploaded = 0;
@@ -222,6 +223,8 @@ public class MainActivity extends AppCompatActivity
                 competitorQuantityDtoList = comptitorQuantityRepository.query(new GetAllData());
                 quantityUploaded = 0;
                 final int size = shopStatuses.size();
+
+              //  Toast.makeText(MainActivity.this,"Status size:"+size,Toast.LENGTH_LONG).show();
                 if (size <= 0 && localStored.size() <= 0 && feedbacks.size() <= 0 && pops.size() <= 0 && expiredItems.size() <= 0 && stocktake.size() <= 0 && competitorQuantityDtoList.size() <= 0) {
                     Toast.makeText(MainActivity.this, "No data to upload", Toast.LENGTH_SHORT).show();
                 } else if (size <= 0 && localStored.size() > 0) {
@@ -318,7 +321,7 @@ public class MainActivity extends AppCompatActivity
 
                     for (final String dispName : dispNames) {
 
-                        String itemsids = null, quantity = null, beforeimg = null, afterimg = null, display_name=null;
+                        String itemsids = null, quantity = null, beforeimg = null, afterimg = null, display_name=null ,facing=null;
 
 
                         List<QuantityDto> shopquantities = quanityRepository.queryfordate(new GetAllData(), date, shopid, visitid);
@@ -335,6 +338,12 @@ public class MainActivity extends AppCompatActivity
                                     quantity += "," + shopquantity.quantity;
                                 } else {
                                     quantity = shopquantity.quantity;
+                                }
+
+                                if (facing != null) {
+                                    facing += "," + shopquantity.facing;
+                                } else {
+                                    facing = shopquantity.facing;
                                 }
 
 
@@ -358,9 +367,9 @@ public class MainActivity extends AppCompatActivity
                                     }
 
                                     if (display_name != null) {
-                                        display_name += "," + Images.displayName;
+                                        display_name += "," + Images.categoryName;
                                     } else {
-                                        display_name = Images.displayName;
+                                        display_name = Images.categoryName;
                                     }
                                 }
                               //  beforeimg = images.get(0).beforeImage;
@@ -370,7 +379,7 @@ public class MainActivity extends AppCompatActivity
                             }
                             if (InternetConnection.checkConnection(getBaseContext())) {
                                 IApiCalls api = RetrofitClient.instance.retrofit.create(IApiCalls.class);
-                                Call<Response> apiCall = api.uploadallQuanity(shopid, itemsids, quantity, beforeimg, afterimg,display_name, visitid);
+                                Call<Response> apiCall = api.uploadallQuanity(shopid, itemsids, quantity, facing,beforeimg, afterimg,display_name, visitid);
                                 apiCall.enqueue(new UploadQuantityManager(new IRestResponseListner<Response>() {
                                     @Override
                                     public void onSuccessResponse(Response model) {
@@ -729,19 +738,24 @@ public class MainActivity extends AppCompatActivity
 
    private void uploadExpiredItems() {
         expireduploaded = 0;
+
         final int size = expiredItems.size();
         if (expiredItems.size() <= 0) {
             uploadstocktake();
         }
         for (final ExpiredItemDto expiredItemDto : expiredItems) {
             IApiCalls api = RetrofitClient.instance.retrofit.create(IApiCalls.class);
+
             Call<Response> apiCall = api.uploadExpiredItems(expiredItemDto.location, expiredItemDto.timestamp, expiredItemDto.expired, expiredItemDto.nearexpired, expiredItemDto.itemid, expiredItemDto.shopid,expiredItemDto.visitid);
             apiCall.enqueue(new CommonUploadManger(new IRestResponseListner<Response>() {
                 @Override
                 public void onSuccessResponse(Response model) {
                     Log.d("upload expireditems  of", "" + expiredItemDto.shopid);
+               //     Toast.makeText(MainActivity.this,"Size:"+size+ " id:"+expiredItemDto.itemid, Toast.LENGTH_SHORT).show();
+
 
                     expireduploaded++;
+
                     Log.d("upload expired record", "" + expireduploaded);
                     Log.d("total expired record", "" + size);
                     if (expireduploaded == size) {
@@ -756,11 +770,13 @@ public class MainActivity extends AppCompatActivity
 
                 @Override
                 public void onErrorResponse(APIError erroModel) {
-                    ;
+
+
                     Log.d("expired api error", erroModel.message);
                     dialog.dismiss();
+                 //   Toast.makeText(MainActivity.this,"ex:"+expiredItemDto.expired+ " id:"+expiredItemDto.itemid+"near:"+expiredItemDto.nearexpired, Toast.LENGTH_SHORT).show();
                     Toast.makeText(MainActivity.this, "Data expired uploading failure,please try again", Toast.LENGTH_SHORT).show();
-
+                    h++;
                 }
             }));
         }

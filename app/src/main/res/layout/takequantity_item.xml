@@ -5,22 +5,37 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#E0E3EA"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:weightSum="10">
 
         <TextView
             android:id="@+id/txtname"
-            android:layout_width="120dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:layout_marginLeft="5dp"
-            android:text="" />
+            android:layout_marginLeft="8dp"
+            android:layout_weight="4"
+            android:text=""
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/edtFacing"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:ems="10"
+            android:gravity="center"
+            android:hint="Facing"
+            android:inputType="textPersonName" />
 
         <EditText
             android:id="@+id/edtquantity"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Enter quantity"
+            android:layout_gravity="center"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:hint="Total Qty"
             android:inputType="number" />
     </LinearLayout>
 </layout>

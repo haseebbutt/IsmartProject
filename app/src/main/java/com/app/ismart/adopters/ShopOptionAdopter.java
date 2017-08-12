@@ -66,7 +66,7 @@ public class ShopOptionAdopter extends BaseRecyclerViewAdapter<ShopOptionDto, Sh
             fragmentCategory.ionUpdateMark=ionUpdateMark;
             new FragmentUtils((Activity) context, fragmentCategory, R.id.fragContainer);
         }
-        else  if(model.getName().equalsIgnoreCase("Pop")){
+        else  if(model.getName().equalsIgnoreCase("POP")){
             FragmentPopSubmit fargment = new FragmentPopSubmit();
             fargment.shopDto = shopDto;
             fargment.ionUpdateMark=ionUpdateMark;
@@ -78,7 +78,7 @@ public class ShopOptionAdopter extends BaseRecyclerViewAdapter<ShopOptionDto, Sh
             fargment.ionUpdateMark=ionUpdateMark;
             new FragmentUtils((Activity) context, fargment, R.id.fragContainer);
         }
-        else  if(model.getName().equalsIgnoreCase("Stocktake")){
+        else  if(model.getName().equalsIgnoreCase("Stock Inventory")){
         // shoptype(shopDto);
             String location= ((MainActivity) context).checklocation();
             FragmentBackdoorCategories fargment = new FragmentBackdoorCategories();

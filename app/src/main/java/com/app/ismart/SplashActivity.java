@@ -180,7 +180,7 @@ public class SplashActivity extends AppCompatActivity {
 
                   //  Toast.makeText(SplashActivity.this, "" + deviceId, Toast.LENGTH_LONG).show();
 
-                    URL1 = "http://173.212.235.106/api/imei/" + deviceId;
+                    URL1 = "http://173.212.235.106:81/api/imei/" + deviceId;
 
                     requestQueue = Volley.newRequestQueue(getApplicationContext());
 

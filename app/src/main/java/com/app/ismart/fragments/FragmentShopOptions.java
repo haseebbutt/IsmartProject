@@ -122,8 +122,8 @@ public class FragmentShopOptions extends Fragment implements IonUpdateMark {
         componentHashMap.put("Feedback", R.drawable.icon2);
         componentHashMap.put("Expiry", R.drawable.icon3);
         componentHashMap.put("Competitor", R.drawable.icon4);
-        componentHashMap.put("Pop", R.drawable.popup);
-        componentHashMap.put("Stocktake", R.drawable.ic_menu_send);
+        componentHashMap.put("POP", R.drawable.popup);
+        componentHashMap.put("Stock Inventory", R.drawable.ic_menu_send);
         date = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
         format= new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
 
@@ -139,19 +139,27 @@ public class FragmentShopOptions extends Fragment implements IonUpdateMark {
                 visitdto.setVisitid(shopDto.getVisitId());
                 visitdto.setSchedularid(shopDto.getId());
 
-                visitsRepository.update(visitdto);
+                try {
+                    visitsRepository.update(visitdto);
+                }catch (Exception e){
 
+
+                }
                 ///////////////////////////////////////////
 
                 VisitsDto visitdto1=new VisitsDto();
-
                 int visitAdded=shopDto.getVisitId()+1;
 
                 visitdto1.setSchedularid(shopDto.getId());
                 visitdto1.setVisitid(visitAdded);
                 visitdto1.setCompleted(0);
-                visitsRepository.add(visitdto1);
 
+                try {
+                    visitsRepository.add(visitdto1);
+                }catch (Exception e){
+
+
+                }
                 String shopid=Integer.toString(shopDto.getId());
 
                 String addonstring1=Integer.toString(shopDto.getVisitId()+1);
@@ -343,7 +351,7 @@ public class FragmentShopOptions extends Fragment implements IonUpdateMark {
                             //   Toast.makeText(getContext(), "Competitor data exists", Toast.LENGTH_LONG).show();
                            }
                     }
-                } else if (options.get(i).getName().equalsIgnoreCase("Stocktake")) {
+                } else if (options.get(i).getName().equalsIgnoreCase("Stock Inventory")) {
                     List<QuantityDto> data = backdoorQuantityRepository.queryfordate(new GetAllData(), date, shopDto.getId() + "",shopDto.getVisitId()+"");
                     if (data.size() >= 1) {
                         options.get(i).setFilled(true);
@@ -389,7 +397,7 @@ public class FragmentShopOptions extends Fragment implements IonUpdateMark {
                 completedBtn.setEnabled(false);
             }
 
-            adapter.notifyDataSetChanged();
+         //   adapter.notifyDataSetChanged();
         }
     }
 

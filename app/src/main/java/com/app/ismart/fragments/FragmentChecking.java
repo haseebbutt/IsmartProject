@@ -35,11 +35,13 @@ import com.app.ismart.async.AsyncDispatcher;
 import com.app.ismart.async.IAsync;
 import com.app.ismart.databinding.FragmentcheckingBinding;
 import com.app.ismart.dto.DisplayDto;
+import com.app.ismart.dto.ItemDto;
 import com.app.ismart.dto.ShopDto;
 import com.app.ismart.dto.ShopImagesDto;
 import com.app.ismart.realm.RealmController;
 import com.app.ismart.realm.repository.ShopImagesRepository;
 import com.app.ismart.realm.specfication.GetAllData;
+import com.app.ismart.utils.FragmentUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -72,10 +74,12 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
     private RealmController realmController;
     String date;
     String afterImage, beforeImage;
-    public ArrayList<DisplayDto> display;
-    public String pos;
+    public String display;
+    public int pos;
     public int i;
     public String a;
+    public List<ItemDto> item;
+    public ArrayList<DisplayDto> plano;
 
     @Nullable
     @Override
@@ -92,11 +96,14 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
         realmController = RealmController.with(this);
         shopImagesRepository = new ShopImagesRepository(realmController.getRealm());
         date = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());
-        i= Integer.parseInt(pos);
-        a =display.get(i).display;
+      //  i= Integer.parseInt(pos);
+        a =display;
+       // a =item.get(0).getTitle();
+      //  Toast.makeText((Activity)context,""+a,Toast.LENGTH_LONG).show();
 
         List<ShopImagesDto> shopimages = shopImagesRepository.queryForSpecficDate(new GetAllData(), date, "" + shopDto.getId(),""+shopDto.getVisitId(),a);
         if (shopimages.size() >= 1) {
+        //    Toast.makeText((Activity)context,"data exists",Toast.LENGTH_LONG).show();
             afterImage = shopimages.get(0).afterImage;
             beforeImage = shopimages.get(0).beforeImage;
         }
@@ -129,7 +136,6 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
                 }
             }
         });
-
 
         return layoutBinding.getRoot();
     }
@@ -173,11 +179,11 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
             case R.id.btnSave:
 
 
-                if (beforeImageURI == null && beforeImage==null) {
+           /*     if (beforeImageURI == null && beforeImage==null) {
                     Toast.makeText(context, "please take before photo", Toast.LENGTH_SHORT).show();
                 } else if (afterImageURI == null && afterImage==null) {
                     Toast.makeText(context, "please take after photo", Toast.LENGTH_SHORT).show();
-                } else {
+                } else { */
                     new AsyncDispatcher(new IAsync() {
 
 
@@ -198,6 +204,11 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
                                 Bitmap after = getBitmap(afterImageURI);
                                 afterImage = Base64.encodeToString(getBytesFromBitmap(after),
                                         Base64.NO_WRAP);
+                            }else{
+                               // Bitmap after = getBitmap(afterImageURI);
+                                Bitmap after = BitmapFactory.decodeResource(context.getResources(), R.drawable.noimg);
+                                afterImage = Base64.encodeToString(getBytesFromBitmap(after),
+                                        Base64.NO_WRAP);
                             }
                             return null;
                         }
@@ -206,29 +217,42 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
                         public void IOnPostExecute(Object result) {
 
 
-
                             ShopImagesDto dto = new ShopImagesDto();
                             dto.shopid = "" + shopDto.getId();
                             dto.beforeImage = beforeImage;
                             dto.afterImage = afterImage;
                             dto.date = date;
-                            dto.displayName=a;
-                            dto.visitid=""+shopDto.getVisitId();
+                            dto.categoryName = a;
+                            dto.visitid = "" + shopDto.getVisitId();
+                            try {
+                                List<ShopImagesDto> shopimages = shopImagesRepository.queryForSpecficDate(new GetAllData(), date, "" + shopDto.getId(), "" + shopDto.getVisitId(), a);
+                                if (shopimages.size() >= 1) {
+                                    dto.id = shopimages.get(0).id;
+                                    shopImagesRepository.update(dto);
+                                } else {
 
-                            List<ShopImagesDto> shopimages = shopImagesRepository.queryForSpecficDate(new GetAllData(), date, "" + shopDto.getId(),""+shopDto.getVisitId(),a);
-                            if (shopimages.size() >= 1) {
-                                dto.id = shopimages.get(0).id;
-                                shopImagesRepository.update(dto);
-                            } else {
+                                    shopImagesRepository.add(dto);
+                                }
+                                Toast.makeText(context, "Before Photo Saved", Toast.LENGTH_SHORT).show();
 
-                                shopImagesRepository.add(dto);
+
+
+                              //  getActivity().getSupportFragmentManager().popBackStack();
+                            } catch (Exception e) {
+
+
                             }
-                            Toast.makeText(context, "Photos saved", Toast.LENGTH_SHORT).show();
-                            getActivity().getSupportFragmentManager().popBackStack();
+
+                            FragmentTakeQuantity fragment = new FragmentTakeQuantity();
+                            fragment.item = item;
+                            fragment.shopDto = shopDto;
+                            fragment.display=display;
+                            fragment.displaylist =plano;
+                            new FragmentUtils(getActivity(), fragment, R.id.fragContainer);
                         }
                     });
 
-                }
+              //  }
 
                 break;
         }

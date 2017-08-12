@@ -104,15 +104,14 @@ public class GetAllData implements RealmSpecification {
     }
 
     @Override
-    public RealmResults<TableShopImages> toRealmShopImagesmResults(Realm realm, String date, String shopid,String visitid,String dispName) {
+    public RealmResults<TableShopImages> toRealmShopImagesmResults(Realm realm, String date, String shopid,String visitid,String catName) {
 
         return realm.where(TableShopImages.class)
                 .equalTo("date", date)
                 .equalTo("shopid", shopid)
                 .equalTo("visitid", visitid)
-                .equalTo("displayName", dispName)
+                .equalTo("categoryName", catName)
                 .findAll();
-
 
     }
 

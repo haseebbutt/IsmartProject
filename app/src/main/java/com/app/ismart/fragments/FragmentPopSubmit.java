@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.app.ismart.MainActivity;
 import com.app.ismart.R;
 import com.app.ismart.adopters.PopSubmitAdopter;
+import com.app.ismart.adopters.PopSubmitAdpt;
 import com.app.ismart.api.IApiCalls;
 import com.app.ismart.databinding.FragmentPopsubmitBinding;
 import com.app.ismart.dto.Pop;
@@ -43,6 +44,7 @@ import com.app.ismart.dto.ShopDto;
 import com.app.ismart.interfaces.IonTakePhoto;
 import com.app.ismart.interfaces.IonUpdateMark;
 import com.app.ismart.interfaces.OnEditTextChanged;
+import com.app.ismart.interfaces.OnEditTextChangedNew;
 import com.app.ismart.rcvbase.RecyclerViewUtils;
 import com.app.ismart.realm.RealmController;
 import com.app.ismart.realm.repository.PopRepository;
@@ -75,7 +77,7 @@ import static android.app.Activity.RESULT_OK;
  * Created by Faheem-Abbas on 5/29/2017.
  */
 
-public class FragmentPopSubmit extends Fragment implements IRestResponseListner<List<Pop>>, OnEditTextChanged, IonTakePhoto {
+public class FragmentPopSubmit extends Fragment implements IRestResponseListner<List<Pop>>, OnEditTextChangedNew, IonTakePhoto {
     FragmentPopsubmitBinding layoutBinding;
     private RealmController realmController;
     PopRepository repository;
@@ -87,6 +89,8 @@ public class FragmentPopSubmit extends Fragment implements IRestResponseListner<
     private int REQUEST_CAMERA = 12032, SELECT_FILE = 10923;
     int position = 0;
     public IonUpdateMark ionUpdateMark;
+    String [] item2;
+    private String[] mDataset;
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -140,11 +144,17 @@ public class FragmentPopSubmit extends Fragment implements IRestResponseListner<
                             dto.photo = pop.getImage();
                             dto.location=location;
                             dto.visitid = shopDto.getVisitId() + "";
-                            List<PopSubmitDto> exists = popSubmitRepository.query(new GetAllData(), dto.popid, dto.shopid,dto.visitid);
-                            if (exists.size() >= 1) {
-                                popSubmitRepository.update(dto);
-                            } else {
-                                popSubmitRepository.add(dto);
+
+                            try {
+                                List<PopSubmitDto> exists = popSubmitRepository.query(new GetAllData(), dto.popid, dto.shopid, dto.visitid);
+                                if (exists.size() >= 1) {
+                                    popSubmitRepository.update(dto);
+                                } else {
+                                    popSubmitRepository.add(dto);
+                                }
+                            }catch (Exception e){
+
+
                             }
 
                         }
@@ -168,7 +178,14 @@ public class FragmentPopSubmit extends Fragment implements IRestResponseListner<
         }
 
 
-        PopSubmitAdopter adapter = new PopSubmitAdopter(data, getActivity(), this,this);
+
+        int SIZE=data.size();
+
+        //  Toast.makeText(getActivity(),""+SIZE,Toast.LENGTH_LONG).show();
+        item2=new String[SIZE];
+      //  PopSubmitAdopter adapter = new PopSubmitAdopter(data, getActivity(), this,this);
+
+        PopSubmitAdpt adapter = new PopSubmitAdpt(data,item2, this,this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         layoutBinding.rcvpop.setLayoutManager(RecyclerViewUtils.getGridLayoutManager(getContext(), 1));
@@ -204,7 +221,7 @@ public class FragmentPopSubmit extends Fragment implements IRestResponseListner<
     }
 
     @Override
-    public void onTextChanged(int position, String charSeq) {
+    public void onTextChanged1(int position, String charSeq) {
         pops.get(position).setQuantity(charSeq);
     }
 

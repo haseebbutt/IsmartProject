@@ -56,6 +56,7 @@ public interface IApiCalls {
     Call<Response> uploadallQuanity(@Field("shopId") String shopId,
                                     @Field("products") String products,
                                     @Field("quantities") String quantities,
+                                    @Field("facing") String facing,
                                     @Field("beforePhoto") String beforePhoto,
                                     @Field("afterPhoto") String afterPhoto,
                                     @Field("display_name") String display_name,

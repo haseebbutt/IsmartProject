@@ -280,6 +280,7 @@ public class FragmentShopClose extends Fragment implements AdapterView.OnItemSel
 
                             Toast.makeText(context, "Shop status saved", Toast.LENGTH_SHORT).show();
                             if(!isShopenOpen) {
+
                                 getActivity().getSupportFragmentManager().popBackStack();
                             }else{
                                 getActivity().getSupportFragmentManager().popBackStack();

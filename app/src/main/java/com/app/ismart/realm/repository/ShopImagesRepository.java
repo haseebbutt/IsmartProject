@@ -40,8 +40,7 @@ public class ShopImagesRepository implements IRepository<ShopImagesDto> {
                 newsRealm.setAfterImage(item.afterImage);
                 newsRealm.setDate(item.date);
                 newsRealm.setVisitid(item.visitid);
-                newsRealm.setDisplayName(item.displayName);
-
+                newsRealm.setCategoryName(item.categoryName);
 
             }
         });
@@ -63,7 +62,7 @@ public class ShopImagesRepository implements IRepository<ShopImagesDto> {
                     newsRealm.setAfterImage(item.afterImage);
                     newsRealm.setDate(item.date);
                     newsRealm.setVisitid(item.visitid);
-                    newsRealm.setDisplayName(item.displayName);
+                    newsRealm.setCategoryName(item.categoryName);
 
                 }
             });
@@ -81,7 +80,7 @@ public class ShopImagesRepository implements IRepository<ShopImagesDto> {
         toEdit.setAfterImage(item.afterImage);
         toEdit.setDate(item.date);
         toEdit.setVisitid(item.visitid);
-        toEdit.setDisplayName(item.displayName);
+        toEdit.setCategoryName(item.categoryName);
         realm.commitTransaction();
     }
 

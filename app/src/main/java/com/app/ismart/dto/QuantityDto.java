@@ -14,4 +14,5 @@ public class QuantityDto {
     public String display;
     public String location;
     public String visitid;
+    public String facing;
 }

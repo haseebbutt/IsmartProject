@@ -20,14 +20,12 @@
         </android.support.v7.widget.Toolbar>
 
 
-
-
         <ImageView
             android:id="@+id/imgBefore"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="3.5"
             android:layout_marginTop="10dp"
+            android:layout_weight="8"
             app:srcCompat="@drawable/noimg" />
 
         <Button
@@ -46,6 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="3.5"
+            android:visibility="gone"
             app:srcCompat="@drawable/noimg" />
 
         <Button
@@ -57,15 +56,16 @@
             android:layout_weight="1"
             android:background="@color/red"
             android:text="After Photo"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:visibility="gone" />
 
         <Button
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.8"
-            android:background="@drawable/btn"
             android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn"
             android:text="Save"
             android:textColor="@color/white" />
 

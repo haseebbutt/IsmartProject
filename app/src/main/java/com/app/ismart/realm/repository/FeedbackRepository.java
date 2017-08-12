@@ -60,8 +60,8 @@ public class FeedbackRepository implements IRepository<FeedBackDto> {
                     newsRealm.setCategoryid(""+item.getCategory_id());
                     newsRealm.setFeedback(item.getFeedback());
                     newsRealm.setFeedbackid(""+item.getId());
-                    newsRealm.setFeedback(item.getFeedback());
-                    newsRealm.setFeedbackid(""+item.getId());
+                  //  newsRealm.setFeedback(item.getFeedback());
+                  //  newsRealm.setFeedbackid(""+item.getId());
 
                 }
             });
@@ -81,8 +81,8 @@ public class FeedbackRepository implements IRepository<FeedBackDto> {
         toEdit.setCategoryid(""+item.getCategory_id());
         toEdit.setFeedback(item.getFeedback());
         toEdit.setFeedbackid(""+item.getId());
-        toEdit.setFeedback(item.getFeedback());
-        toEdit.setFeedbackid(""+item.getId());
+      //  toEdit.setFeedback(item.getFeedback());
+       // toEdit.setFeedbackid(""+item.getId());
 
         realm.commitTransaction();
     }

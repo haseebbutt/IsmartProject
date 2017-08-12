@@ -87,11 +87,17 @@ String date;
                         dto.response = itemDto.getAnswers();
                         dto.date=date;
                         dto.visitId=""+shopDto.getVisitId();
-                        List<FeedbackSubmitDto> exists = repositoryFeedbackSubmit.queryforfeedback(new GetAllData(), shopDto.getId() + "", itemDto.getFeedbackid(),""+shopDto.getVisitId());
-                        if (exists.size() >= 1) {
-                            repositoryFeedbackSubmit.update(dto);
-                        } else {
-                            repositoryFeedbackSubmit.add(dto);
+
+                        try {
+                            List<FeedbackSubmitDto> exists = repositoryFeedbackSubmit.queryforfeedback(new GetAllData(), shopDto.getId() + "", itemDto.getFeedbackid(), "" + shopDto.getVisitId());
+                            if (exists.size() >= 1) {
+                                repositoryFeedbackSubmit.update(dto);
+                            } else {
+                                repositoryFeedbackSubmit.add(dto);
+                            }
+                        }catch (Exception e){
+
+
                         }
 
                     }

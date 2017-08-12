@@ -126,8 +126,8 @@ public class DisplayAdopter extends BaseExpandableListAdapter {
 
                 FragmentChecking fragmentChecking = new FragmentChecking();
                 fragmentChecking.shopDto = shopDto;
-                fragmentChecking.display=displaylist;
-                fragmentChecking.pos=""+v.getTag();
+               // fragmentChecking.display=displaylist;
+               // fragmentChecking.pos=""+v.getTag();
                 new FragmentUtils((Activity) context, fragmentChecking, R.id.fragContainer);
             }
         });

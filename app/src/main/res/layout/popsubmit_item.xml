@@ -4,9 +4,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
+        android:layout_height="wrap_content"
         android:background="#E0E3EA"
+        android:orientation="horizontal"
         android:weightSum="10">
 
         <TextView
@@ -19,7 +19,8 @@
             android:layout_toStartOf="@+id/edtquantity"
             android:layout_weight="3"
             android:gravity="center"
-            android:text="TextView" />
+            android:text="TextView"
+            android:textStyle="bold" />
 
 
         <EditText

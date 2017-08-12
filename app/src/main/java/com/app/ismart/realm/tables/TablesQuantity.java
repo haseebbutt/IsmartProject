@@ -16,12 +16,13 @@ public class TablesQuantity extends RealmObject {
     private  String display;
     private  String date;
     private String visitId;
+    private String facing;
 
-    public String getdisplay() {
+    public String getDisplay() {
         return display;
     }
 
-    public void setdisplay(String display) {
+    public void setDisplay(String display) {
         this.display = display;
     }
 
@@ -33,6 +34,16 @@ public class TablesQuantity extends RealmObject {
 
         return date;
     }
+
+    public void setFacing(String facing) {
+        this.facing = facing;
+    }
+
+    public String getFacing() {
+
+        return facing;
+    }
+
 
 
     public void setId(int id) {

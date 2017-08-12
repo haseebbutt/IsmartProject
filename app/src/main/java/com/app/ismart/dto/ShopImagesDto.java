@@ -11,5 +11,5 @@ public class ShopImagesDto {
     public  String afterImage;
     public String date;
     public String visitid;
-    public String displayName;
+    public String categoryName;
 }

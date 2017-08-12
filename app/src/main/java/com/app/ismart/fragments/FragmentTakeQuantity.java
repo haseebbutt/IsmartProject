@@ -20,9 +20,11 @@ import com.app.ismart.R;
 import com.app.ismart.adopters.TakeQuantityAdopter;
 import com.app.ismart.adopters.TakeQuantityAdpt;
 import com.app.ismart.databinding.FragmenttakequantityBinding;
+import com.app.ismart.dto.DisplayDto;
 import com.app.ismart.dto.ItemDto;
 import com.app.ismart.dto.QuantityDto;
 import com.app.ismart.dto.ShopDto;
+import com.app.ismart.interfaces.IOnExpiredNew;
 import com.app.ismart.interfaces.OnEditTextChanged;
 import com.app.ismart.interfaces.OnEditTextChangedNew;
 import com.app.ismart.rcvbase.RecyclerViewUtils;
@@ -30,9 +32,11 @@ import com.app.ismart.realm.RealmController;
 import com.app.ismart.realm.repository.ProductRepository;
 import com.app.ismart.realm.repository.QuanityRepository;
 import com.app.ismart.realm.specfication.GetAllData;
+import com.app.ismart.utils.FragmentUtils;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -40,14 +44,17 @@ import java.util.List;
  * Created by Faheem-Abbas on 5/22/2017.
  */
 
-public class FragmentTakeQuantity extends Fragment implements OnEditTextChangedNew{
+public class FragmentTakeQuantity extends Fragment implements IOnExpiredNew {
     FragmenttakequantityBinding layoutBinding;
     public List<ItemDto> item;
     String [] item2;
+    String [] item3;
     String date;
     public ShopDto shopDto;
     private RealmController realmController;
     ProductRepository repository;
+    String display;
+    public ArrayList<DisplayDto> displaylist;
 
     QuanityRepository quantityrepository;
 
@@ -62,28 +69,13 @@ public class FragmentTakeQuantity extends Fragment implements OnEditTextChangedN
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
        // TakeQuantityAdopter adapter = new TakeQuantityAdopter(item, getContext(), this);
 
-   /*     item2[0]="this";
-        item2[1]="is";
-        item2[2]="great";
-        item2[4]="tutorial";
-        item2[5]="for";
-        item2[6]="recycle";
-        item2[7]="adapter";
-        item2[8]="adapter4";
-        item2[9]="adapter5";
-        item2[10]="adapter6";
-        item2[11]="adapter7";
-        item2[12]="adapter8";
-        item2[13]="adapter9";
-
-        */
-
         int SIZE=item.size();
 
       //  Toast.makeText(getActivity(),""+SIZE,Toast.LENGTH_LONG).show();
         item2=new String[SIZE];
+        item3=new String[SIZE];
 
-        TakeQuantityAdpt adpt=new TakeQuantityAdpt(item,item2,this);
+        TakeQuantityAdpt adpt=new TakeQuantityAdpt(item,item2,item3,this,getContext());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         realmController = RealmController.with(this);
@@ -102,43 +94,73 @@ public class FragmentTakeQuantity extends Fragment implements OnEditTextChangedN
                 new HorizontalDividerItemDecoration.Builder(getContext()).paint(paint).build());
         adpt.notifyDataSetChanged();
 
+        layoutBinding.planogram1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentImages fragmentImages = new FragmentImages();
+                fragmentImages.shopDto = shopDto;
+                fragmentImages.display=displaylist;
+                new FragmentUtils(getActivity(), fragmentImages, R.id.fragContainer);
+
+            }
+        });
+
         layoutBinding.btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 for (ItemDto itemDto : item) {
-
-                       final List<QuantityDto> itemquantity = quantityrepository.queryforitemVisits(new GetAllData(), date, "" + shopDto.getId(), "" + itemDto.getId(), itemDto.getDisplay(), shopDto.getVisitId() + "");
+                    try {
+                        final List<QuantityDto> itemquantity = quantityrepository.queryforitemVisits(new GetAllData(), date, "" + shopDto.getId(), "" + itemDto.getId(), itemDto.getDisplay(), shopDto.getVisitId() + "");
                         // Toast.makeText(getContext(), ""+itemDto.getTitle()+"\n"+itemDto.getQuantity(), Toast.LENGTH_SHORT).show();
 
-                    QuantityDto dto = new QuantityDto();
-                    dto.quantity = itemDto.getQuantity();
-                    dto.shopid = "" + shopDto.getId();
-                    dto.itemid = "" + itemDto.getId();
-                    dto.date = date;
-                    dto.visitid = shopDto.getVisitId()+"";
-                    dto.display=itemDto.getDisplay();
+                        QuantityDto dto = new QuantityDto();
+                        dto.quantity = itemDto.getQuantity();
+                        dto.facing=itemDto.getFacing();
+                        dto.shopid = "" + shopDto.getId();
+                        dto.itemid = "" + itemDto.getId();
+                        dto.date = date;
+                        dto.visitid = shopDto.getVisitId() + "";
+                        dto.display = itemDto.getDisplay();
 
-                  //  Toast.makeText(getContext(), ""+itemDto.getDisplay(), Toast.LENGTH_SHORT).show();
-                    if (itemquantity.size() >= 1) {
-                        dto.id = itemquantity.get(0).id;
-                        quantityrepository.update(dto);
-                      //  Toast.makeText(getContext(), "Quantity Updated", Toast.LENGTH_SHORT).show();
-                    } else {
-                        quantityrepository.add(dto);
-                      //  Toast.makeText(getContext(), "Quantity Added", Toast.LENGTH_SHORT).show();
+                        //  Toast.makeText(getContext(), ""+itemDto.getDisplay(), Toast.LENGTH_SHORT).show();
+                        if (itemquantity.size() >= 1) {
+                            dto.id = itemquantity.get(0).id;
+                            quantityrepository.update(dto);
+                            //  Toast.makeText(getContext(), "Quantity Updated", Toast.LENGTH_SHORT).show();
+                        } else {
+                            quantityrepository.add(dto);
+                            //  Toast.makeText(getContext(), "Quantity Added", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }catch(Exception e){
+
                     }
-
                 }
+
                 Toast.makeText(getContext(), "Quantity saved", Toast.LENGTH_SHORT).show();
-                getActivity().getSupportFragmentManager().popBackStack();
+              //  Toast.makeText(getContext(), ""+display, Toast.LENGTH_SHORT).show();
+              //  getActivity().getSupportFragmentManager().popBackStack();
+                FragmentCheckingAfter fragmentafter=new FragmentCheckingAfter();
+                fragmentafter.shopDto = shopDto;
+                fragmentafter.display=display;
+
+                new FragmentUtils(getActivity(), fragmentafter, R.id.fragContainer);
             }
         });
         return layoutBinding.getRoot();
     }
 
     @Override
-    public void onTextChanged1(int position, String charSeq) {
+    public void onTextChanged1(int type, int position, String charSeq) {
+        switch (type) {
+            case 1:
+                item.get(position).setQuantity(charSeq);
+                break;
+            case 2:
+                item.get(position).setFacing(charSeq);
+                break;
 
-        item.get(position).setQuantity(charSeq);
+        }
+
     }
 }

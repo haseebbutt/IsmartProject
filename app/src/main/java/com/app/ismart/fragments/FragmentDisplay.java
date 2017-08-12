@@ -134,14 +134,21 @@ public class FragmentDisplay extends Fragment implements IRestResponseListner<Li
                 itemid.clear();
                 String display = expandableListTitle.get(groupPosition);
 
-              //  Toast.makeText(getActivity(),""+display,Toast.LENGTH_LONG).show();
                 CategoryDto item = expandableListDetail.get(expandableListTitle.get(groupPosition)).get(childPosition);
 
-            //    Toast.makeText(getActivity(),"item:"+item.getName(),Toast.LENGTH_LONG).show();
-                FragmentTakeQuantity fragment = new FragmentTakeQuantity();
+                FragmentChecking fragmentChecking = new FragmentChecking();
+                fragmentChecking.shopDto = shopDto;
+                fragmentChecking.pos=childPosition;
+                fragmentChecking.display=item.getName();
+                fragmentChecking.plano=displaylist;
+                fragmentChecking.item = filterList(display, item.getName(), expandableListItemsDetail);
+              //  fragmentChecking.pos=""+v.getTag();
+                new FragmentUtils(getActivity(), fragmentChecking, R.id.fragContainer);
+
+              /*  FragmentTakeQuantity fragment = new FragmentTakeQuantity();
                 fragment.item = filterList(display, item.getName(), expandableListItemsDetail);
                 fragment.shopDto = shopDto;
-                new FragmentUtils(getActivity(), fragment, R.id.fragContainer);
+                new FragmentUtils(getActivity(), fragment, R.id.fragContainer); */
 
                 return false;
             }

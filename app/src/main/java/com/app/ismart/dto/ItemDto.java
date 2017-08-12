@@ -22,6 +22,7 @@ public class ItemDto {
     private String shopid;
     private String displayid;
     private String imageurl;
+    private String facing;
 
     public String getImageurl() {
         return imageurl;
@@ -66,6 +67,14 @@ public class ItemDto {
         return quantity;
     }
 
+    public void setFacing(String facing) {
+        this.facing = facing;
+    }
+
+    public String getFacing() {
+
+        return facing;
+    }
     public Integer getId() {
         return id;
     }

@@ -37,9 +37,10 @@ public class QuanityRepository implements IRepository<QuantityDto> {
                 newsRealm.setId(nextID);
                 newsRealm.setItemId(item.itemid);
                 newsRealm.setQuantity(item.quantity);
+                newsRealm.setFacing(item.facing);
                 newsRealm.setShopId(item.shopid);
                 newsRealm.setDate(item.date);
-                newsRealm.setdisplay(item.display);
+                newsRealm.setDisplay(item.display);
                 newsRealm.setVisitId(item.visitid);
 
             }
@@ -61,7 +62,8 @@ public class QuanityRepository implements IRepository<QuantityDto> {
                     newsRealm.setQuantity(item.quantity);
                     newsRealm.setShopId(item.shopid);
                     newsRealm.setDate(item.date);
-                    newsRealm.setdisplay(item.display);
+                    newsRealm.setDisplay(item.display);
+                    newsRealm.setFacing(item.facing);
                     newsRealm.setVisitId(item.visitid);
 
                 }
@@ -79,7 +81,8 @@ public class QuanityRepository implements IRepository<QuantityDto> {
         toEdit.setQuantity(item.quantity);
         toEdit.setShopId(item.shopid);
         toEdit.setDate(item.date);
-        toEdit.setdisplay(item.display);
+        toEdit.setDisplay(item.display);
+        toEdit.setFacing(item.facing);
         toEdit.setVisitId(item.visitid);
         realm.commitTransaction();
     }

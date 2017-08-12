@@ -18,11 +18,14 @@ import android.widget.Toast;
 import com.app.ismart.MainActivity;
 import com.app.ismart.R;
 import com.app.ismart.adopters.ExpiredItemsAdopter;
+import com.app.ismart.adopters.ExpiredItemsAdpt;
+import com.app.ismart.adopters.TakeBackQuantityAdpt;
 import com.app.ismart.databinding.FragmentExpiredBinding;
 import com.app.ismart.dto.ExpiredItemDto;
 import com.app.ismart.dto.ItemDto;
 import com.app.ismart.dto.ShopDto;
 import com.app.ismart.interfaces.IOnExpired;
+import com.app.ismart.interfaces.IOnExpiredNew;
 import com.app.ismart.rcvbase.RecyclerViewUtils;
 import com.app.ismart.realm.RealmController;
 import com.app.ismart.realm.repository.ExpiredItemRepository;
@@ -42,17 +45,20 @@ import java.util.List;
  * Created by Faheem-Abbas on 6/2/2017.
  */
 
-public class FragmentExpiredItems extends Fragment implements IOnExpired {
+public class FragmentExpiredItems extends Fragment implements IOnExpiredNew {
     FragmentExpiredBinding layoutBinding;
     public List<ItemDto> item;
     public List<ExpiredItemDto> expiredItem = new ArrayList<>();
     String date;
+    String [] item2;
+    String [] item3;
     public ShopDto shopDto;
     private RealmController realmController;
     ProductRepository repository;
     QuanityRepository quantityrepository;
     ExpiredItemRepository expiredItemRepository;
     ArrayList<String> itemid=new ArrayList<>();
+    int l=1;
 
     @Nullable
     @Override
@@ -83,11 +89,23 @@ public class FragmentExpiredItems extends Fragment implements IOnExpired {
                     expiredItemDto.expired = exists.get(0).expired;
                     expiredItemDto.nearexpired = exists.get(0).nearexpired;
                 }
+                else{
+
+                    expiredItemDto.expired = null;
+                    expiredItemDto.nearexpired = null;
+                }
                 expiredItem.add(expiredItemDto);
                 itemid.add(itemDto.getId()+"");
             }
         }
-        ExpiredItemsAdopter adapter = new ExpiredItemsAdopter(expiredItem, getContext(), this);
+
+        int SIZE=expiredItem.size();
+
+        //  Toast.makeText(getActivity(),""+SIZE,Toast.LENGTH_LONG).show();
+        item2=new String[SIZE];
+        item3=new String[SIZE];
+      //  ExpiredItemsAdpt adapter = new ExpiredItemsAdpt(expiredItem, getContext(), this);
+        ExpiredItemsAdpt adapter=new ExpiredItemsAdpt(expiredItem,item2,item3,this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         layoutBinding.rcvitems.setAdapter(adapter);
@@ -106,18 +124,47 @@ public class FragmentExpiredItems extends Fragment implements IOnExpired {
                 String location = ((MainActivity) getActivity()).checklocation();
                 if (location != null) {
                     for (ExpiredItemDto itemDto : expiredItem) {
-                        List<ExpiredItemDto> exists = expiredItemRepository.queryforitem(new GetAllData(), date, shopDto.getId() + "", itemDto.itemid + "",shopDto.getVisitId()+"");
-                        // Toast.makeText(getContext(), ""+itemDto.getTitle()+"\n"+itemDto.getQuantity(), Toast.LENGTH_SHORT).show();
-                        itemDto.location = location;
-                        itemDto.timestamp = getDateTime();
-                        if (exists.size() >= 1) {
 
-                            expiredItemRepository.update(itemDto);
-                            //  Toast.makeText(getContext(), "Quantity Updated", Toast.LENGTH_SHORT).show();
-                        } else {
-                            expiredItemRepository.add(itemDto);
-                            //  Toast.makeText(getContext(), "Quantity Added", Toast.LENGTH_SHORT).show();
-                        }
+                      //  try {
+                          final List<ExpiredItemDto> exists = expiredItemRepository.queryforitem(new GetAllData(), date, itemDto.shopid + "", itemDto.itemid + "", itemDto.visitid + "");
+                            // Toast.makeText(getContext(), ""+itemDto.getTitle()+"\n"+itemDto.getQuantity(), Toast.LENGTH_SHORT).show();
+
+                            ExpiredItemDto expiredItemDto=new ExpiredItemDto();
+                            expiredItemDto.location = location;
+                            expiredItemDto.date=itemDto.date;
+                            expiredItemDto.timestamp = getDateTime();
+                            expiredItemDto.expired=itemDto.expired;
+                            expiredItemDto.nearexpired=itemDto.nearexpired;
+                            expiredItemDto.shopid=""+shopDto.getId();
+                            expiredItemDto.visitid=""+shopDto.getVisitId();
+                            expiredItemDto.itemid=itemDto.itemid;
+
+                            int size=exists.size();
+                          String a=  Integer.toString(size);
+
+                          //  Toast.makeText(getContext(), "size:"+size, Toast.LENGTH_SHORT).show();
+                            if (exists.size() >= 1) {
+
+                                expiredItemRepository.update(expiredItemDto);
+                                //  Toast.makeText(getContext(), "Quantity Updated", Toast.LENGTH_SHORT).show();
+                            } else{
+                                try {
+                                    if((expiredItemDto.expired).length()==0 && (expiredItemDto.nearexpired).length()==0){
+                                       // Toast.makeText(getContext(), "Not Added"+l, Toast.LENGTH_SHORT).show();
+                                       // l++;
+
+                                    }else {
+                                        expiredItemRepository.add(expiredItemDto);
+                                        //Toast.makeText(getContext(), "Name:"+expiredItemDto.itemname+"id:"+expiredItemDto.itemid, Toast.LENGTH_SHORT).show();
+                                    }
+
+                                }catch (Exception e){
+
+                                }
+
+                            }
+
+
 
                     }
                     Toast.makeText(getContext(), "Expired items saved", Toast.LENGTH_SHORT).show();
@@ -129,7 +176,7 @@ public class FragmentExpiredItems extends Fragment implements IOnExpired {
     }
 
     @Override
-    public void onTextChanged(int type, int position, String charSeq) {
+    public void onTextChanged1(int type, int position, String charSeq) {
         switch (type) {
             case 1:
                 expiredItem.get(position).expired = charSeq;

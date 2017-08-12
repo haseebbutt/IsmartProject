@@ -40,7 +40,8 @@
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/llTitle" />
+            android:layout_below="@+id/llTitle"
+            android:layout_above="@+id/btnSave" />
 
         <Button
             android:id="@+id/btnSave"

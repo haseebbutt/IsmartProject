@@ -95,23 +95,29 @@ public class FragmentBackdoorQuantity extends Fragment implements OnEditTextChan
                 String location = ((MainActivity) getActivity()).checklocation();
                 if (location != null) {
                     for (ItemDto itemDto : item) {
-                        final List<QuantityDto> itemquantity = backdoorQuantityRepository.queryforitem(new GetAllData(), date, "" + shopDto.getId(), "" + itemDto.getId(),shopDto.getVisitId()+"");
-                        // Toast.makeText(getContext(), ""+itemDto.getTitle()+"\n"+itemDto.getQuantity(), Toast.LENGTH_SHORT).show();
-                        QuantityDto dto = new QuantityDto();
-                        dto.quantity = itemDto.getQuantity();
-                        dto.shopid = "" + shopDto.getId();
-                        dto.itemid = "" + itemDto.getId();
-                        dto.date = date;
-                        dto.location = location;
-                        dto.timestamp = getDateTime();
-                        dto.visitid=shopDto.getVisitId()+"";
-                        if (itemquantity.size() >= 1) {
-                            dto.id = itemquantity.get(0).id;
-                            backdoorQuantityRepository.update(dto);
-                            //  Toast.makeText(getContext(), "Quantity Updated", Toast.LENGTH_SHORT).show();
-                        } else {
-                            backdoorQuantityRepository.add(dto);
-                            //  Toast.makeText(getContext(), "Quantity Added", Toast.LENGTH_SHORT).show();
+
+                        try {
+                            final List<QuantityDto> itemquantity = backdoorQuantityRepository.queryforitem(new GetAllData(), date, "" + shopDto.getId(), "" + itemDto.getId(), shopDto.getVisitId() + "");
+                            // Toast.makeText(getContext(), ""+itemDto.getTitle()+"\n"+itemDto.getQuantity(), Toast.LENGTH_SHORT).show();
+                            QuantityDto dto = new QuantityDto();
+                            dto.quantity = itemDto.getQuantity();
+                            dto.shopid = "" + shopDto.getId();
+                            dto.itemid = "" + itemDto.getId();
+                            dto.date = date;
+                            dto.location = location;
+                            dto.timestamp = getDateTime();
+                            dto.visitid = shopDto.getVisitId() + "";
+                            if (itemquantity.size() >= 1) {
+                                dto.id = itemquantity.get(0).id;
+                                backdoorQuantityRepository.update(dto);
+                                //  Toast.makeText(getContext(), "Quantity Updated", Toast.LENGTH_SHORT).show();
+                            } else {
+                                backdoorQuantityRepository.add(dto);
+                                //  Toast.makeText(getContext(), "Quantity Added", Toast.LENGTH_SHORT).show();
+                            }
+                        }catch(Exception e){
+
+
                         }
 
                     }
