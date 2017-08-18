@@ -39,25 +39,8 @@
             android:text="Before Photo"
             android:textColor="@android:color/white" />
 
-        <ImageView
-            android:id="@+id/imgAfter"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3.5"
-            android:visibility="gone"
-            app:srcCompat="@drawable/noimg" />
 
-        <Button
-            android:id="@+id/btnAfter"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1"
-            android:background="@color/red"
-            android:text="After Photo"
-            android:textColor="@android:color/white"
-            android:visibility="gone" />
+
 
         <Button
             android:id="@+id/btnSave"

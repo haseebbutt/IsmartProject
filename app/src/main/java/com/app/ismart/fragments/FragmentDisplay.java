@@ -191,6 +191,7 @@ public class FragmentDisplay extends Fragment implements IRestResponseListner<Li
                 final List<QuantityDto> itemquantity = quantityrepository.queryforitemVisits(new GetAllData(), date, "" + shopDto.getId(), "" + itemDto.getId(),display,""+shopDto.getVisitId());
                 if (itemquantity.size() >= 1) {
                     itemDto.setQuantity(itemquantity.get(0).quantity);
+                    itemDto.setFacing(itemquantity.get(0).facing);
                 }
 
             }

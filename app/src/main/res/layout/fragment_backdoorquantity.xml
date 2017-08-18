@@ -35,14 +35,14 @@
         </android.support.v7.widget.LinearLayoutCompat>
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="3"
-            android:layout_below="@+id/llTitle"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:id="@+id/linearLayout">
+            android:layout_below="@+id/llTitle"
+            android:orientation="horizontal"
+            android:weightSum="4">
 
             <TextView
                 android:id="@+id/textView13"
@@ -54,12 +54,22 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/textView10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingRight="10dp"
+                android:text="Facing"
+                android:textStyle="bold" />
+
+            <TextView
                 android:id="@+id/textView12"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="Frontend"
+                android:text="Total"
                 android:textStyle="bold" />
 
             <TextView

@@ -107,7 +107,6 @@ public class GetAllData implements RealmSpecification {
     public RealmResults<TableShopImages> toRealmShopImagesmResults(Realm realm, String date, String shopid,String visitid,String catName) {
 
         return realm.where(TableShopImages.class)
-                .equalTo("date", date)
                 .equalTo("shopid", shopid)
                 .equalTo("visitid", visitid)
                 .equalTo("categoryName", catName)

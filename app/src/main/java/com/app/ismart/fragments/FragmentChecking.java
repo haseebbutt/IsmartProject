@@ -89,7 +89,6 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(shopDto.getName());
         layoutBinding.toolbar.setTitleTextColor(Color.WHITE);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        layoutBinding.btnAfter.setOnClickListener(this);
         layoutBinding.btnBefore.setOnClickListener(this);
         layoutBinding.btnSave.setOnClickListener(this);
         context = getContext();
@@ -102,10 +101,23 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
       //  Toast.makeText((Activity)context,""+a,Toast.LENGTH_LONG).show();
 
         List<ShopImagesDto> shopimages = shopImagesRepository.queryForSpecficDate(new GetAllData(), date, "" + shopDto.getId(),""+shopDto.getVisitId(),a);
+
+        Toast.makeText((Activity)context,""+shopimages.size(),Toast.LENGTH_LONG).show();
         if (shopimages.size() >= 1) {
         //    Toast.makeText((Activity)context,"data exists",Toast.LENGTH_LONG).show();
-            afterImage = shopimages.get(0).afterImage;
+         //   afterImage = shopimages.get(0).afterImage;
             beforeImage = shopimages.get(0).beforeImage;
+            if((shopimages.get(0).afterImage).equals("0")){
+
+                afterImage ="0";
+            }else{
+
+                afterImage = shopimages.get(0).afterImage;
+            }
+        }else{
+            Toast.makeText((Activity)context,"No data already",Toast.LENGTH_LONG).show();
+            afterImage="0";
+
         }
         new AsyncDispatcher(new IAsync() {
             Bitmap before, after;
@@ -120,9 +132,11 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
                 if (beforeImage != null) {
                     before = Base64ToBitmap(beforeImage);
                 }
-                if (afterImage != null) {
+             /*   if (afterImage.equals("0")) {
+
+                } else{
                     after = Base64ToBitmap(afterImage);
-                }
+                } */
                 return null;
             }
 
@@ -131,9 +145,9 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
                 if (before != null) {
                     layoutBinding.imgBefore.setImageBitmap(before);
                 }
-                if (after != null) {
+            /*    if (after != null) {
                     layoutBinding.imgAfter.setImageBitmap(after);
-                }
+                } */
             }
         });
 
@@ -165,7 +179,7 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
                     cameraIntent();
                 }
                 break;
-            case R.id.btnAfter:
+         /*   case R.id.btnAfter:
                 isbefore = false;
                 // selectImage();
                 //  cameraIntent();
@@ -175,7 +189,7 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
                     isCamerSelected = true;
                     cameraIntent();
                 }
-                break;
+                break; */
             case R.id.btnSave:
 
 
@@ -200,7 +214,7 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
                                 beforeImage = Base64.encodeToString(getBytesFromBitmap(before),
                                         Base64.NO_WRAP);
                             }
-                            if(afterImageURI!=null) {
+                        /*    if(afterImageURI!=null) {
                                 Bitmap after = getBitmap(afterImageURI);
                                 afterImage = Base64.encodeToString(getBytesFromBitmap(after),
                                         Base64.NO_WRAP);
@@ -209,7 +223,7 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
                                 Bitmap after = BitmapFactory.decodeResource(context.getResources(), R.drawable.noimg);
                                 afterImage = Base64.encodeToString(getBytesFromBitmap(after),
                                         Base64.NO_WRAP);
-                            }
+                            } */
                             return null;
                         }
 
@@ -220,7 +234,12 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
                             ShopImagesDto dto = new ShopImagesDto();
                             dto.shopid = "" + shopDto.getId();
                             dto.beforeImage = beforeImage;
-                            dto.afterImage = afterImage;
+                            if (afterImage.equals("0")) {
+                                dto.afterImage ="0";
+                            } else{
+                                dto.afterImage=afterImage;
+                            }
+
                             dto.date = date;
                             dto.categoryName = a;
                             dto.visitid = "" + shopDto.getVisitId();
@@ -229,7 +248,9 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
                                 if (shopimages.size() >= 1) {
                                     dto.id = shopimages.get(0).id;
                                     shopImagesRepository.update(dto);
+                                    Toast.makeText(context, "update", Toast.LENGTH_SHORT).show();
                                 } else {
+                                    Toast.makeText(context, "adding", Toast.LENGTH_SHORT).show();
 
                                     shopImagesRepository.add(dto);
                                 }
@@ -243,17 +264,18 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
 
                             }
 
-                            FragmentTakeQuantity fragment = new FragmentTakeQuantity();
-                            fragment.item = item;
-                            fragment.shopDto = shopDto;
-                            fragment.display=display;
-                            fragment.displaylist =plano;
-                            new FragmentUtils(getActivity(), fragment, R.id.fragContainer);
+
                         }
                     });
 
               //  }
 
+                FragmentTakeQuantity fragment = new FragmentTakeQuantity();
+                fragment.item = item;
+                fragment.shopDto = shopDto;
+                fragment.display=display;
+                fragment.displaylist =plano;
+                new FragmentUtils(getActivity(), fragment, R.id.fragContainer);
                 break;
         }
     }
@@ -365,7 +387,7 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
 
             }
            // Uri tempUri = getImageUri(getContext(), reducedSizeBitmap);
-            if (isbefore) {
+          //  if (isbefore) {
                 beforeImageURI = imageToUploadUri;
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), beforeImageURI);
@@ -375,7 +397,7 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
                     e.printStackTrace();
                 }
 
-            } else {
+           /* } else {
                 afterImageURI = imageToUploadUri;
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), afterImageURI);
@@ -383,8 +405,9 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
                     layoutBinding.imgAfter.setImageBitmap(bitmap);
                 } catch (IOException e) {
                     e.printStackTrace();
-                }
             }
+              } */
+
         }
     }
 
@@ -465,11 +488,11 @@ public class FragmentChecking extends Fragment implements View.OnClickListener {
                 e.printStackTrace();
             }
         }
-        if (isbefore) {
+     //   if (isbefore) {
             beforeImageURI = data.getData();
-        } else {
-            afterImageURI = data.getData();
-        }
+    //    } else {
+      //      afterImageURI = data.getData();
+      //  }
 
 
     }

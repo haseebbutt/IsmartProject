@@ -73,7 +73,7 @@ public class ShopImagesRepository implements IRepository<ShopImagesDto> {
     public void update(ShopImagesDto item) {
 
         TableShopImages toEdit = realm.where(TableShopImages.class)
-                .equalTo("date", item.date).findFirst();
+                .equalTo("shopid", item.shopid).equalTo("visitid", item.visitid).equalTo("categoryName", item.categoryName).findFirst();
         realm.beginTransaction();
         toEdit.setShopid(item.shopid);
         toEdit.setBeforeimage(item.beforeImage);

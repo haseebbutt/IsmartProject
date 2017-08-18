@@ -26,7 +26,7 @@
             android:ems="10"
             android:gravity="center"
             android:hint="Facing"
-            android:inputType="textPersonName" />
+            android:inputType="number" />
 
         <EditText
             android:id="@+id/edtquantity"
